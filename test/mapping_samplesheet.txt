@@ -1,0 +1,3 @@
+sampleID	referenceFasta
+positive_control	virus_refseq/FoCo17_viruses.fasta
+water_negative_control	virus_refseq/FoCo17_viruses.fasta

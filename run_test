@@ -1,0 +1,9 @@
+#!/bin/bash 
+
+nextflow run main.nf \
+ -resume \
+ -profile local,singularity \
+ --fastq_dir test/fastq \
+ --fastq_pattern "*.fastq.gz" \
+ --mapping_samplesheet test/mapping_samplesheet.txt 
+

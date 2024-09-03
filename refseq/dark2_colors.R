@@ -1,0 +1,15 @@
+#RColorBrewer Dark2 colors
+dark2_lightblue   <- rgb(166/255,206/255,227/255)
+dark2_blue        <- rgb(31/255,120/255,180/255)
+dark2_lightgreen  <- rgb(178/255,223/255,138/255)
+dark2_green       <- rgb(51/255,160/255,44/255)
+dark2_pink        <- rgb(251/255,154/255,153/255)
+dark2_red         <- rgb(227/255,26/255,28/255)
+dark2_lightorange <- rgb(253/255,191/255,111/255)
+dark2_orange      <- rgb(255/255,127/255,0/255)
+dark2_lightpurple <- rgb(202/255,178/255,214/255)
+dark2_purple      <- rgb(106/255,61/255,154/255)
+dark2_yellow      <- rgb(255/255,255/255,153/255)
+dark2_brown       <- rgb(177/255,89/255,40/255)
+
+fancy_color_scale <- c(dark2_orange, dark2_blue, dark2_green)

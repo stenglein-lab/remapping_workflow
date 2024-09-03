@@ -1,0 +1,3 @@
+sampleID	referenceFasta
+FoCo17_Pos	virus_refseq/FoCo17_viruses.fasta
+PosCtrl_Pool1	virus_refseq/FoCo17_viruses.fasta
