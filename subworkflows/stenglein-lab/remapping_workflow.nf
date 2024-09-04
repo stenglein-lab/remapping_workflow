@@ -13,10 +13,41 @@ workflow REMAPPING_WORKFLOW {
   PARSE_MAPPING_SAMPLESHEET.out.sample_sheet.map{ meta, fasta -> [meta, fasta] }.set{fasta_ch}
 
   BUILD_BWA_INDEX(fasta_ch)
+
+
+/*
+  // what's going on with reads channel?
+  MARSHALL_FASTQ.out.reads
+    .tap { reads_view_ch }
+
+  reads_view_ch.view { "Reads: $it" }
+
+  // what's going on with BWA build channel?
+  BUILD_BWA_INDEX.out.index
+    .tap { bwa_view_ch }
+
+  bwa_view_ch.view { "BWA Build: $it" }
+ */ 
+
+  // pull out just sample ID (ignoring single-end vs not) 
+  // so we can join just based on sample ID 
+  MARSHALL_FASTQ.out.reads.map{meta, reads -> [meta.id, meta, reads]}.set{reads_ch}
+  BUILD_BWA_INDEX.out.index.map{meta, index -> [meta.id, index]}.set{index_ch}
+
+  // drop just sample ID, bring back in original meta
+  reads_ch.join(index_ch).map{id, meta, reads, index -> [meta, reads, index] }.set{ch_mapping}
   
+/*
   // combine matching fastq and fasta from previous outputs into a single channel
   ch_mapping = MARSHALL_FASTQ.out.reads
-    .join(BUILD_BWA_INDEX.out.index)
+    .join(BUILD_BWA_INDEX.out.index, failOnMismatch: false)
+*/
+
+  // debug join: anything getting to ch_mapping?
+  ch_mapping
+    .tap { mapping_view_ch }
+
+  mapping_view_ch.view { "Mapping View ch: $it" }
   
   REMAP_TO_GENOMES(ch_mapping)
 }

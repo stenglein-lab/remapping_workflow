@@ -18,7 +18,7 @@ def parse_samplesheet(LinkedHashMap row) {
     // make first element of output nf-core-style meta
     def meta        = [:]
     meta.id         = row.sampleID
-    meta.single_end = true
+    // meta.single_end = row.single_end.toBoolean()
 
     // return a list of sample_id and the path to the reference Fasta
     array = [ meta , file(row.referenceFasta)]
