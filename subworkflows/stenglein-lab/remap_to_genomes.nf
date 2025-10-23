@@ -16,4 +16,9 @@ workflow REMAP_TO_GENOMES {
   MAP_TO_GENOME(reads, fasta)
 
   BAM_TO_SAM(MAP_TO_GENOME.out.bam.filter{it[1].size() > 0})                                             
+
+  emit:
+
+  bam = MAP_TO_GENOME.out.bam
+  sam = BAM_TO_SAM.out.sam
 }         
