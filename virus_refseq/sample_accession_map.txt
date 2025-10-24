@@ -1,0 +1,372 @@
+James-A4	RNA1	PQ625116	PQ625116 Galbut virus isolate D_mel_USA_2023_James-A4 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+James-A4	RNA2	PQ625013	PQ625013 Galbut virus isolate D_mel_USA_2023_James-A4 segment RNA2 putative capsid protein gene, complete cds
+James-A4	RNA3	PQ624908	PQ624908 Galbut virus isolate D_mel_USA_2023_James-A4 segment RNA3 hypothetical protein gene, complete cds
+500-M-F11	RNA1	PQ625077	PQ625077 Galbut virus isolate D_mel_USA_2023_500-M-F11 segment RNA1 putative RNA-dependent RNA polymerase gene, partial cds
+500-M-F11	RNA2	PQ624974	PQ624974 Galbut virus isolate D_mel_USA_2023_500-M-F11 segment RNA2 putative capsid protein gene, complete cds
+500-M-F11	RNA3	PQ624865	PQ624865 Galbut virus isolate D_mel_USA_2023_500-M-F11 segment RNA3 hypothetical protein gene, complete cds
+1020-F6	RNA1	PQ625085	PQ625085 Galbut virus isolate D_mel_USA_2023_1020-F6 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-F6	RNA2	PQ624982	PQ624982 Galbut virus isolate D_mel_USA_2023_1020-F6 segment RNA2 putative capsid protein gene, complete cds
+1020-F6	RNA3	PQ624874	PQ624874 Galbut virus isolate D_mel_USA_2023_1020-F6 segment RNA3 hypothetical protein gene, complete cds
+1020-F6	Chaq	PQ625169	PQ625169 Chaq virus isolate D_mel_USA_2023_1020-F6 hypothetical protein gene, complete cds
+500-M-54	RNA1	PQ625066	PQ625066 Galbut virus isolate D_mel_USA_2023_500-M-54 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-54	RNA2	PQ624963	PQ624963 Galbut virus isolate D_mel_USA_2023_500-M-54 segment RNA2 putative capsid protein gene, complete cds
+500-M-54	RNA3	PQ624853	PQ624853 Galbut virus isolate D_mel_USA_2023_500-M-54 segment RNA3 hypothetical protein gene, complete cds
+Peach-8-F7	RNA1	PQ625138	PQ625138 Galbut virus isolate D_mel_USA_2023_Peach-8-F7 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Peach-8-F7	RNA2	PQ625037	PQ625037 Galbut virus isolate D_mel_USA_2023_Peach-8-F7 segment RNA2 putative capsid protein gene, complete cds
+Peach-8-F7	RNA3	PQ624933	PQ624933 Galbut virus isolate D_mel_USA_2023_Peach-8-F7 segment RNA3 hypothetical protein gene, complete cds
+1428-F-21	RNA1	PQ625099	PQ625099 Galbut virus isolate D_mel_USA_2023_1428-F-21 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1428-F-21	RNA2	PQ624996	PQ624996 Galbut virus isolate D_mel_USA_2023_1428-F-21 segment RNA2 putative capsid protein gene, complete cds
+1428-F-21	RNA3	PQ624889	PQ624889 Galbut virus isolate D_mel_USA_2023_1428-F-21 segment RNA3 hypothetical protein gene, complete cds
+1020-M-19	RNA1	PQ625094	PQ625094 Galbut virus isolate D_mel_USA_2023_1020-M-19 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-M-19	RNA2	PQ624991	PQ624991 Galbut virus isolate D_mel_USA_2023_1020-M-19 segment RNA2 putative capsid protein gene, complete cds
+1020-M-19	RNA3	PQ624884	PQ624884 Galbut virus isolate D_mel_USA_2023_1020-M-19 segment RNA3 hypothetical protein gene, complete cds
+1020-M-19	Chaq	PQ625173	PQ625173 Chaq virus isolate D_mel_USA_2023_1020-M-19 hypothetical protein gene, complete cds
+1020-B6	RNA1	PQ625080	PQ625080 Galbut virus isolate D_mel_USA_2023_1020-B6 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-B6	RNA2	PQ624977	PQ624977 Galbut virus isolate D_mel_USA_2023_1020-B6 segment RNA2 putative capsid protein gene, complete cds
+1020-B6	RNA3	PQ624869	PQ624869 Galbut virus isolate D_mel_USA_2023_1020-B6 segment RNA3 hypothetical protein gene, complete cds
+1020-B6	Chaq	PQ625167	PQ625167 Chaq virus isolate D_mel_USA_2023_1020-B6 hypothetical protein gene, complete cds
+Adobe-B4	RNA1	PQ625104	PQ625104 Galbut virus isolate D_mel_USA_2023_Adobe-B4 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Adobe-B4	RNA2	PQ625001	PQ625001 Galbut virus isolate D_mel_USA_2023_Adobe-B4 segment RNA2 putative capsid protein gene, complete cds
+Adobe-B4	RNA3	PQ624896	PQ624896 Galbut virus isolate D_mel_USA_2023_Adobe-B4 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-15	RNA1	PQ625152	PQ625152 Galbut virus isolate D_mel_USA_2023_Penn-M-15 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-M-15	RNA2	PQ625055	PQ625055 Galbut virus isolate D_mel_USA_2023_Penn-M-15 segment RNA2 putative capsid protein gene, complete cds
+Penn-M-15	RNA3	PQ624951	PQ624951 Galbut virus isolate D_mel_USA_2023_Penn-M-15 segment RNA3 hypothetical protein gene, complete cds
+ME-M-20	RNA1	PQ625133	PQ625133 Galbut virus isolate D_mel_USA_2023_ME-M-20 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-20	RNA2	PQ625032	PQ625032 Galbut virus isolate D_mel_USA_2023_ME-M-20 segment RNA2 putative capsid protein gene, complete cds
+ME-M-20	RNA3	PQ624928	PQ624928 Galbut virus isolate D_mel_USA_2023_ME-M-20 segment RNA3 hypothetical protein gene, complete cds
+1020-C2	RNA1	PQ625081	PQ625081 Galbut virus isolate D_mel_USA_2023_1020-C2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-C2	RNA2	PQ624978	PQ624978 Galbut virus isolate D_mel_USA_2023_1020-C2 segment RNA2 putative capsid protein gene, complete cds
+1020-C2	RNA3	PQ624870	PQ624870 Galbut virus isolate D_mel_USA_2023_1020-C2 segment RNA3 hypothetical protein gene, complete cds
+ME-M-10	RNA1	PQ625127	PQ625127 Galbut virus isolate D_mel_USA_2023_ME-M-10 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-10	RNA2	PQ625026	PQ625026 Galbut virus isolate D_mel_USA_2023_ME-M-10 segment RNA2 putative capsid protein gene, complete cds
+ME-M-10	RNA3	PQ624922	PQ624922 Galbut virus isolate D_mel_USA_2023_ME-M-10 segment RNA3 hypothetical protein gene, complete cds
+1020-F-0818-D11	RNA1	PQ625091	PQ625091 Galbut virus isolate D_mel_USA_2023_1020-F-0818-D11 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-F-0818-D11	RNA2	PQ624988	PQ624988 Galbut virus isolate D_mel_USA_2023_1020-F-0818-D11 segment RNA2 putative capsid protein gene, complete cds
+1020-F-0818-D11	RNA3	PQ624881	PQ624881 Galbut virus isolate D_mel_USA_2023_1020-F-0818-D11 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-11	RNA2	PQ625053	PQ625053 Galbut virus isolate D_mel_USA_2023_Penn-M-11 segment RNA2 putative capsid protein gene, complete cds
+Penn-M-11	RNA3	PQ624949	PQ624949 Galbut virus isolate D_mel_USA_2023_Penn-M-11 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-11	Chaq	PQ625212	PQ625212 Chaq virus isolate D_mel_USA_2023_Penn-M-11_1 hypothetical protein gene, complete cds
+1020-F-40	RNA1	PQ625088	PQ625088 Galbut virus isolate D_mel_USA_2023_1020-F-40 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-F-40	RNA2	PQ624985	PQ624985 Galbut virus isolate D_mel_USA_2023_1020-F-40 segment RNA2 putative capsid protein gene, complete cds
+1020-F-40	RNA3	PQ624877	PQ624877 Galbut virus isolate D_mel_USA_2023_1020-F-40_1 segment RNA3 hypothetical protein gene, complete cds
+1020-F-40	RNA3	PQ624878	PQ624878 Galbut virus isolate D_mel_USA_2023_1020-F-40_2 segment RNA3 hypothetical protein gene, complete cds
+1020-F-40	Chaq	PQ625171	PQ625171 Chaq virus isolate D_mel_USA_2023_1020-F-40 hypothetical protein gene, complete cds
+ME-M-3	RNA1	PQ625153	PQ625153 Galbut virus isolate D_sim_USA_2023_ME-M-3 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-3	RNA2	PQ625056	PQ625056 Galbut virus isolate D_sim_USA_2023_ME-M-3 segment RNA2 putative capsid protein gene, complete cds
+ME-M-3	RNA3	PQ624952	PQ624952 Galbut virus isolate D_sim_USA_2023_ME-M-3 segment RNA3 hypothetical protein gene, complete cds
+ME-M-3	Chaq	PQ625214	PQ625214 Chaq virus isolate D_sim_USA_2023_ME-M-3 hypothetical protein gene, complete cds
+mel-21-MDS-9	RNA1	PQ625059	PQ625059 Galbut virus isolate D_mel_USA_2021_mel-21-MDS-9 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+mel-21-MDS-9	RNA2	PQ624955	PQ624955 Galbut virus isolate D_mel_USA_2021_mel-21-MDS-9 segment RNA2 putative capsid protein gene, complete cds
+mel-21-MDS-9	RNA3	PQ624845	PQ624845 Galbut virus isolate D_mel_USA_2021_mel-21-MDS-9 segment RNA3 hypothetical protein gene, complete cds
+mel-21-MDS-9	Chaq	PQ625154	PQ625154 Chaq virus isolate D_mel_USA_2021_mel-21-MDS-9 hypothetical protein gene, complete cds
+500-M-61	RNA1	PQ625070	PQ625070 Galbut virus isolate D_mel_USA_2023_500-M-61 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-61	RNA2	PQ624967	PQ624967 Galbut virus isolate D_mel_USA_2023_500-M-61 segment RNA2 putative capsid protein gene, complete cds
+500-M-61	RNA3	PQ624858	PQ624858 Galbut virus isolate D_mel_USA_2023_500-M-61 segment RNA3 hypothetical protein gene, complete cds
+500-M-61	Chaq	PQ625160	PQ625160 Chaq virus isolate D_mel_USA_2023_500-M-61 hypothetical protein gene, complete cds
+1020-M-0818-A10	RNA1	PQ625097	PQ625097 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A10 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-M-0818-A10	RNA2	PQ624994	PQ624994 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A10 segment RNA2 putative capsid protein gene, complete cds
+1020-M-0818-A10	RNA3	PQ624887	PQ624887 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A10 segment RNA3 hypothetical protein gene, complete cds
+Myrtle-E9	RNA1	PQ625136	PQ625136 Galbut virus isolate D_mel_USA_2023_Myrtle-E9 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Myrtle-E9	RNA2	PQ625035	PQ625035 Galbut virus isolate D_mel_USA_2023_Myrtle-E9 segment RNA2 putative capsid protein gene, complete cds
+Myrtle-E9	RNA3	PQ624931	PQ624931 Galbut virus isolate D_mel_USA_2023_Myrtle-E9 segment RNA3 hypothetical protein gene, complete cds
+Myrtle-E9	Chaq	PQ625197	PQ625197 Chaq virus isolate D_mel_USA_2023_Myrtle-E9 hypothetical protein gene, complete cds
+1428-M-4	RNA1	PQ625101	PQ625101 Galbut virus isolate D_mel_USA_2023_1428-M-4 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1428-M-4	RNA2	PQ624998	PQ624998 Galbut virus isolate D_mel_USA_2023_1428-M-4 segment RNA2 putative capsid protein gene, complete cds
+1428-M-4	RNA3	PQ624892	PQ624892 Galbut virus isolate D_mel_USA_2023_1428-M-4 segment RNA3 hypothetical protein gene, complete cds
+1428-M-4	Chaq	PQ625177	PQ625177 Chaq virus isolate D_mel_USA_2023_1428-M-4 hypothetical protein gene, complete cds
+ME-M-18	RNA1	PQ625131	PQ625131 Galbut virus isolate D_mel_USA_2023_ME-M-18 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-18	RNA2	PQ625030	PQ625030 Galbut virus isolate D_mel_USA_2023_ME-M-18 segment RNA2 putative capsid protein gene, complete cds
+ME-M-18	RNA3	PQ624926	PQ624926 Galbut virus isolate D_mel_USA_2023_ME-M-18 segment RNA3 hypothetical protein gene, complete cds
+500-M-84	RNA1	PQ625075	PQ625075 Galbut virus isolate D_mel_USA_2023_500-M-84 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-84	RNA2	PQ624972	PQ624972 Galbut virus isolate D_mel_USA_2023_500-M-84 segment RNA2 putative capsid protein gene, complete cds
+500-M-84	RNA3	PQ624863	PQ624863 Galbut virus isolate D_mel_USA_2023_500-M-84 segment RNA3 hypothetical protein gene, complete cds
+500-M-84	Chaq	PQ625164	PQ625164 Chaq virus isolate D_mel_USA_2023_500-M-84 hypothetical protein gene, complete cds
+500-M-61-2	RNA1	PQ625069	PQ625069 Galbut virus isolate D_mel_USA_2023_500-M-61-2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-61-2	RNA2	PQ624966	PQ624966 Galbut virus isolate D_mel_USA_2023_500-M-61-2 segment RNA2 putative capsid protein gene, complete cds
+500-M-61-2	RNA3	PQ624857	PQ624857 Galbut virus isolate D_mel_USA_2023_500-M-61-2 segment RNA3 hypothetical protein gene, complete cds
+500-M-61-2	Chaq	PQ625159	PQ625159 Chaq virus isolate D_mel_USA_2023_500-M-61-2 hypothetical protein gene, complete cds
+Penn-F-1	RNA2	PQ625041	PQ625041 Galbut virus isolate D_mel_USA_2023_Penn-F-1 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-1	RNA3	PQ624938	PQ624938 Galbut virus isolate D_mel_USA_2023_Penn-F-1 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-1	Chaq	PQ625200	PQ625200 Chaq virus isolate D_mel_USA_2023_Penn-F-1 hypothetical protein gene, complete cds
+Penn-F-2	RNA1	PQ625142	PQ625142 Galbut virus isolate D_mel_USA_2023_Penn-F-2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-F-2	RNA2	PQ625042	PQ625042 Galbut virus isolate D_mel_USA_2023_Penn-F-2 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-2	RNA3	PQ624939	PQ624939 Galbut virus isolate D_mel_USA_2023_Penn-F-2 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-2	Chaq	PQ625201	PQ625201 Chaq virus isolate D_mel_USA_2023_Penn-F-2_1 hypothetical protein gene, complete cds
+Penn-F-2	Chaq	PQ625202	PQ625202 Chaq virus isolate D_mel_USA_2023_Penn-F-2_2 hypothetical protein gene, complete cds
+ME-M-11	RNA1	PQ625128	PQ625128 Galbut virus isolate D_mel_USA_2023_ME-M-11 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-11	RNA2	PQ625027	PQ625027 Galbut virus isolate D_mel_USA_2023_ME-M-11 segment RNA2 putative capsid protein gene, complete cds
+ME-M-11	RNA3	PQ624923	PQ624923 Galbut virus isolate D_mel_USA_2023_ME-M-11 segment RNA3 hypothetical protein gene, complete cds
+ME-M-11	Chaq	PQ625196	PQ625196 Chaq virus isolate D_mel_USA_2023_ME-M-11 hypothetical protein gene, complete cds
+Penn-M-10	RNA1	PQ625150	PQ625150 Galbut virus isolate D_mel_USA_2023_Penn-M-10 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-M-10	RNA2	PQ625052	PQ625052 Galbut virus isolate D_mel_USA_2023_Penn-M-10 segment RNA2 putative capsid protein gene, complete cds
+Penn-M-10	RNA3	PQ624948	PQ624948 Galbut virus isolate D_mel_USA_2023_Penn-M-10 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-10	Chaq	PQ625211	PQ625211 Chaq virus isolate D_mel_USA_2023_Penn-M-10 hypothetical protein gene, complete cds
+1020-F1	RNA1	PQ625084	PQ625084 Galbut virus isolate D_mel_USA_2023_1020-F1 segment RNA1 putative RNA-dependent RNA polymerase gene, partial cds
+1020-F1	RNA2	PQ624981	PQ624981 Galbut virus isolate D_mel_USA_2023_1020-F1 segment RNA2 putative capsid protein gene, complete cds
+1020-F1	RNA3	PQ624873	PQ624873 Galbut virus isolate D_mel_USA_2023_1020-F1 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-8	RNA1	PQ625149	PQ625149 Galbut virus isolate D_mel_USA_2023_Penn-M-8 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-M-8	RNA2	PQ625051	PQ625051 Galbut virus isolate D_mel_USA_2023_Penn-M-8 segment RNA2 putative capsid protein gene, complete cds
+Penn-M-8	RNA3	PQ624947	PQ624947 Galbut virus isolate D_mel_USA_2023_Penn-M-8 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-8	Chaq	PQ625210	PQ625210 Chaq virus isolate D_mel_USA_2023_Penn-M-8 hypothetical protein gene, complete cds
+1020-A7	RNA1	PQ625079	PQ625079 Galbut virus isolate D_mel_USA_2023_1020-A7 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-A7	RNA2	PQ624976	PQ624976 Galbut virus isolate D_mel_USA_2023_1020-A7 segment RNA2 putative capsid protein gene, complete cds
+1020-A7	RNA3	PQ624867	PQ624867 Galbut virus isolate D_mel_USA_2023_1020-A7_1 segment RNA3 hypothetical protein gene, complete cds
+1020-A7	RNA3	PQ624868	PQ624868 Galbut virus isolate D_mel_USA_2023_1020-A7_2 segment RNA3 hypothetical protein gene, complete cds
+1020-A7	Chaq	PQ625166	PQ625166 Chaq virus isolate D_mel_USA_2023_1020-A7 hypothetical protein gene, complete cds
+CVID-1006-G7	RNA1	PQ625113	PQ625113 Galbut virus isolate D_mel_USA_2023_CVID-1006-G7 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+CVID-1006-G7	RNA2	PQ625010	PQ625010 Galbut virus isolate D_mel_USA_2023_CVID-1006-G7 segment RNA2 putative capsid protein gene, complete cds
+CVID-1006-G7	RNA3	PQ624905	PQ624905 Galbut virus isolate D_mel_USA_2023_CVID-1006-G7 segment RNA3 hypothetical protein gene, complete cds
+CVID-1006-G7	Chaq	PQ625183	PQ625183 Chaq virus isolate D_mel_USA_2023_CVID-1006-G7 hypothetical protein gene, complete cds
+500-F-41	RNA1	PQ625062	PQ625062 Galbut virus isolate D_mel_USA_2023_500-F-41 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-F-41	RNA2	PQ624959	PQ624959 Galbut virus isolate D_mel_USA_2023_500-F-41 segment RNA2 putative capsid protein gene, complete cds
+500-F-41	RNA3	PQ624848	PQ624848 Galbut virus isolate D_mel_USA_2023_500-F-41_1 segment RNA3 hypothetical protein gene, complete cds
+500-F-41	RNA3	PQ624849	PQ624849 Galbut virus isolate D_mel_USA_2023_500-F-41_2 segment RNA3 hypothetical protein gene, complete cds
+500-F-41	Chaq	PQ625156	PQ625156 Chaq virus isolate D_mel_USA_2023_500-F-41 hypothetical protein gene, complete cds
+500-F-21	RNA1	PQ625061	PQ625061 Galbut virus isolate D_mel_USA_2023_500-F-21 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-F-21	RNA2	PQ624957	PQ624957 Galbut virus isolate D_mel_USA_2023_500-F-21_1 segment RNA2 putative capsid protein gene, complete cds
+500-F-21	RNA2	PQ624958	PQ624958 Galbut virus isolate D_mel_USA_2023_500-F-21_2 segment RNA2 putative capsid protein gene, complete cds
+500-F-21	RNA3	PQ624847	PQ624847 Galbut virus isolate D_mel_USA_2023_500-F-21 segment RNA3 hypothetical protein gene, complete cds
+ME-M-14	RNA1	PQ625129	PQ625129 Galbut virus isolate D_mel_USA_2023_ME-M-14 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-14	RNA2	PQ625028	PQ625028 Galbut virus isolate D_mel_USA_2023_ME-M-14 segment RNA2 putative capsid protein gene, complete cds
+ME-M-14	RNA3	PQ624924	PQ624924 Galbut virus isolate D_mel_USA_2023_ME-M-14 segment RNA3 hypothetical protein gene, complete cds
+1020-D3	RNA1	PQ625083	PQ625083 Galbut virus isolate D_mel_USA_2023_1020-D3 segment RNA1 putative RNA-dependent RNA polymerase gene, partial cds
+1020-D3	RNA2	PQ624980	PQ624980 Galbut virus isolate D_mel_USA_2023_1020-D3 segment RNA2 putative capsid protein gene, complete cds
+1020-D3	RNA3	PQ624872	PQ624872 Galbut virus isolate D_mel_USA_2023_1020-D3 segment RNA3 hypothetical protein gene, complete cds
+1020-D3	Chaq	PQ625168	PQ625168 Chaq virus isolate D_mel_USA_2023_1020-D3 hypothetical protein gene, complete cds
+Peach-13-H7	RNA1	PQ625141	PQ625141 Galbut virus isolate D_mel_USA_2023_Peach-13-H7 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Peach-13-H7	RNA2	PQ625040	PQ625040 Galbut virus isolate D_mel_USA_2023_Peach-13-H7 segment RNA2 putative capsid protein gene, complete cds
+Peach-13-H7	RNA3	PQ624936	PQ624936 Galbut virus isolate D_mel_USA_2023_Peach-13-H7_1 segment RNA3 hypothetical protein gene, complete cds
+Peach-13-H7	RNA3	PQ624937	PQ624937 Galbut virus isolate D_mel_USA_2023_Peach-13-H7_2 segment RNA3 hypothetical protein gene, partial cds
+Peach-13-H7	Chaq	PQ625199	PQ625199 Chaq virus isolate D_mel_USA_2023_Peach-13-H7 hypothetical protein gene, complete cds
+Penn-F-4	RNA1	PQ625144	PQ625144 Galbut virus isolate D_mel_USA_2023_Penn-F-4_1 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-F-4	RNA1	PQ625145	PQ625145 Galbut virus isolate D_mel_USA_2023_Penn-F-4_2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-F-4	RNA2	PQ625044	PQ625044 Galbut virus isolate D_mel_USA_2023_Penn-F-4_1 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-4	RNA2	PQ625045	PQ625045 Galbut virus isolate D_mel_USA_2023_Penn-F-4_2 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-4	RNA3	PQ624941	PQ624941 Galbut virus isolate D_mel_USA_2023_Penn-F-4_1 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-4	RNA3	PQ624942	PQ624942 Galbut virus isolate D_mel_USA_2023_Penn-F-4_2 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-4	Chaq	PQ625204	PQ625204 Chaq virus isolate D_mel_USA_2023_Penn-F-4 hypothetical protein gene, complete cds
+sim-20-TD-4	RNA1	PQ625058	PQ625058 Galbut virus isolate D_mel_USA_2020_sim-20-TD-4 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+sim-20-TD-4	RNA2	PQ624954	PQ624954 Galbut virus isolate D_mel_USA_2020_sim-20-TD-4 segment RNA2 putative capsid protein gene, complete cds
+sim-20-TD-4	RNA3	PQ624843	PQ624843 Galbut virus isolate D_mel_USA_2020_sim-20-TD-4_1 segment RNA3 hypothetical protein gene, complete cds
+sim-20-TD-4	RNA3	PQ624844	PQ624844 Galbut virus isolate D_mel_USA_2020_sim-20-TD-4_2 segment RNA3 hypothetical protein gene, complete cds
+CVID-1006-H2	RNA1	PQ625114	PQ625114 Galbut virus isolate D_mel_USA_2023_CVID-1006-H2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+CVID-1006-H2	RNA2	PQ625011	PQ625011 Galbut virus isolate D_mel_USA_2023_CVID-1006-H2 segment RNA2 putative capsid protein gene, complete cds
+CVID-1006-H2	RNA3	PQ624906	PQ624906 Galbut virus isolate D_mel_USA_2023_CVID-1006-H2 segment RNA3 hypothetical protein gene, complete cds
+CVID-1006-H2	Chaq	PQ625184	PQ625184 Chaq virus isolate D_mel_USA_2023_CVID-1006-H2 hypothetical protein gene, complete cds
+Peach-10-F10	RNA1	PQ625140	PQ625140 Galbut virus isolate D_mel_USA_2023_Peach-10-F10 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Peach-10-F10	RNA2	PQ625039	PQ625039 Galbut virus isolate D_mel_USA_2023_Peach-10-F10 segment RNA2 putative capsid protein gene, complete cds
+Peach-10-F10	RNA3	PQ624935	PQ624935 Galbut virus isolate D_mel_USA_2023_Peach-10-F10 segment RNA3 hypothetical protein gene, complete cds
+ME-F-1	RNA1	PQ625118	PQ625118 Galbut virus isolate D_mel_USA_2023_ME-F-1 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-F-1	RNA2	PQ625015	PQ625015 Galbut virus isolate D_mel_USA_2023_ME-F-1 segment RNA2 putative capsid protein gene, complete cds
+ME-F-1	RNA3	PQ624910	PQ624910 Galbut virus isolate D_mel_USA_2023_ME-F-1 segment RNA3 hypothetical protein gene, complete cds
+ME-F-1	Chaq	PQ625187	PQ625187 Chaq virus isolate D_mel_USA_2023_ME-F-1_1 hypothetical protein gene, complete cds
+ME-F-1	Chaq	PQ625188	PQ625188 Chaq virus isolate D_mel_USA_2023_ME-F-1_2 hypothetical protein gene, complete cds
+1020-F-0818-D4	RNA1	PQ625090	PQ625090 Galbut virus isolate D_mel_USA_2023_1020-F-0818-D4 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-F-0818-D4	RNA2	PQ624987	PQ624987 Galbut virus isolate D_mel_USA_2023_1020-F-0818-D4 segment RNA2 putative capsid protein gene, complete cds
+1020-F-0818-D4	RNA3	PQ624880	PQ624880 Galbut virus isolate D_mel_USA_2023_1020-F-0818-D4 segment RNA3 hypothetical protein gene, complete cds
+1020-F-0818-D4	Chaq	PQ625172	PQ625172 Chaq virus isolate D_mel_USA_2023_1020-F-0818-D4 hypothetical protein gene, complete cds
+500-F-11	RNA1	PQ625060	PQ625060 Galbut virus isolate D_mel_USA_2023_500-F-11 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-F-11	RNA2	PQ624956	PQ624956 Galbut virus isolate D_mel_USA_2023_500-F-11 segment RNA2 putative capsid protein gene, complete cds
+500-F-11	RNA3	PQ624846	PQ624846 Galbut virus isolate D_mel_USA_2023_500-F-11 segment RNA3 hypothetical protein gene, complete cds
+500-F-11	Chaq	PQ625155	PQ625155 Chaq virus isolate D_mel_USA_2023_500-F-11 hypothetical protein gene, complete cds
+CVID-1006-G6	RNA1	PQ625112	PQ625112 Galbut virus isolate D_mel_USA_2023_CVID-1006-G6 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+CVID-1006-G6	RNA2	PQ625009	PQ625009 Galbut virus isolate D_mel_USA_2023_CVID-1006-G6 segment RNA2 putative capsid protein gene, complete cds
+CVID-1006-G6	RNA3	PQ624904	PQ624904 Galbut virus isolate D_mel_USA_2023_CVID-1006-G6 segment RNA3 hypothetical protein gene, complete cds
+CVID-1006-G6	Chaq	PQ625182	PQ625182 Chaq virus isolate D_mel_USA_2023_CVID-1006-G6 hypothetical protein gene, complete cds
+1428-F-8	RNA1	PQ625098	PQ625098 Galbut virus isolate D_mel_USA_2023_1428-F-8 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1428-F-8	RNA2	PQ624995	PQ624995 Galbut virus isolate D_mel_USA_2023_1428-F-8 segment RNA2 putative capsid protein gene, complete cds
+1428-F-8	RNA3	PQ624888	PQ624888 Galbut virus isolate D_mel_USA_2023_1428-F-8 segment RNA3 hypothetical protein gene, complete cds
+1428-F-8	Chaq	PQ625176	PQ625176 Chaq virus isolate D_mel_USA_2023_1428-F-8 hypothetical protein gene, complete cds
+500-M-F10	RNA1	PQ625076	PQ625076 Galbut virus isolate D_mel_USA_2023_500-M-F10 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-F10	RNA2	PQ624973	PQ624973 Galbut virus isolate D_mel_USA_2023_500-M-F10 segment RNA2 putative capsid protein gene, complete cds
+500-M-F10	RNA3	PQ624864	PQ624864 Galbut virus isolate D_mel_USA_2023_500-M-F10 segment RNA3 hypothetical protein gene, complete cds
+500-M-F10	Chaq	PQ625165	PQ625165 Chaq virus isolate D_mel_USA_2023_500-M-F10 hypothetical protein gene, complete cds
+ME-F-2	RNA2	PQ625016	PQ625016 Galbut virus isolate D_mel_USA_2023_ME-F-2 segment RNA2 putative capsid protein gene, complete cds
+ME-F-2	RNA3	PQ624911	PQ624911 Galbut virus isolate D_mel_USA_2023_ME-F-2 segment RNA3 hypothetical protein gene, complete cds
+ME-F-2	Chaq	PQ625189	PQ625189 Chaq virus isolate D_mel_USA_2023_ME-F-2 hypothetical protein gene, complete cds
+ME-M-8	RNA1	PQ625126	PQ625126 Galbut virus isolate D_mel_USA_2023_ME-M-8 segment RNA1 putative RNA-dependent RNA polymerase gene, partial cds
+ME-M-8	RNA2	PQ625025	PQ625025 Galbut virus isolate D_mel_USA_2023_ME-M-8 segment RNA2 putative capsid protein gene, complete cds
+ME-M-8	RNA3	PQ624920	PQ624920 Galbut virus isolate D_mel_USA_2023_ME-M-8_1 segment RNA3 hypothetical protein gene, complete cds
+ME-M-8	RNA3	PQ624921	PQ624921 Galbut virus isolate D_mel_USA_2023_ME-M-8_2 segment RNA3 hypothetical protein gene, complete cds
+500-M-65	RNA1	PQ625072	PQ625072 Galbut virus isolate D_mel_USA_2023_500-M-65 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-65	RNA2	PQ624969	PQ624969 Galbut virus isolate D_mel_USA_2023_500-M-65 segment RNA2 putative capsid protein gene, complete cds
+500-M-65	RNA3	PQ624860	PQ624860 Galbut virus isolate D_mel_USA_2023_500-M-65 segment RNA3 hypothetical protein gene, complete cds
+500-M-65	Chaq	PQ625162	PQ625162 Chaq virus isolate D_mel_USA_2023_500-M-65 hypothetical protein gene, complete cds
+ME-M-6	RNA1	PQ625123	PQ625123 Galbut virus isolate D_mel_USA_2023_ME-M-6 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-6	RNA2	PQ625022	PQ625022 Galbut virus isolate D_mel_USA_2023_ME-M-6 segment RNA2 putative capsid protein gene, complete cds
+ME-M-6	RNA3	PQ624917	PQ624917 Galbut virus isolate D_mel_USA_2023_ME-M-6 segment RNA3 hypothetical protein gene, complete cds
+500-M-57	RNA1	PQ625067	PQ625067 Galbut virus isolate D_mel_USA_2023_500-M-57 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-57	RNA2	PQ624964	PQ624964 Galbut virus isolate D_mel_USA_2023_500-M-57 segment RNA2 putative capsid protein gene, complete cds
+500-M-57	RNA3	PQ624854	PQ624854 Galbut virus isolate D_mel_USA_2023_500-M-57 segment RNA3 hypothetical protein gene, complete cds
+500-M-57	Chaq	PQ625158	PQ625158 Chaq virus isolate D_mel_USA_2023_500-M-57 hypothetical protein gene, complete cds
+Adobe-B8	RNA1	PQ625106	PQ625106 Galbut virus isolate D_mel_USA_2023_Adobe-B8 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Adobe-B8	RNA2	PQ625003	PQ625003 Galbut virus isolate D_mel_USA_2023_Adobe-B8 segment RNA2 putative capsid protein gene, complete cds
+Adobe-B8	RNA3	PQ624898	PQ624898 Galbut virus isolate D_mel_USA_2023_Adobe-B8 segment RNA3 hypothetical protein gene, complete cds
+Adobe-B8	Chaq	PQ625179	PQ625179 Chaq virus isolate D_mel_USA_2023_Adobe-B8 hypothetical protein gene, complete cds
+500-F-67	RNA1	PQ625063	PQ625063 Galbut virus isolate D_mel_USA_2023_500-F-67 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-F-67	RNA2	PQ624960	PQ624960 Galbut virus isolate D_mel_USA_2023_500-F-67 segment RNA2 putative capsid protein gene, complete cds
+500-F-67	RNA3	PQ624850	PQ624850 Galbut virus isolate D_mel_USA_2023_500-F-67 segment RNA3 hypothetical protein gene, complete cds
+James-A5	RNA1	PQ625117	PQ625117 Galbut virus isolate D_mel_USA_2023_James-A5 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+James-A5	RNA2	PQ625014	PQ625014 Galbut virus isolate D_mel_USA_2023_James-A5 segment RNA2 putative capsid protein gene, complete cds
+James-A5	RNA3	PQ624909	PQ624909 Galbut virus isolate D_mel_USA_2023_James-A5 segment RNA3 hypothetical protein gene, complete cds
+James-A5	Chaq	PQ625186	PQ625186 Chaq virus isolate D_mel_USA_2023_James-A5 hypothetical protein gene, complete cds
+Penn-F-9	RNA1	PQ625146	PQ625146 Galbut virus isolate D_mel_USA_2023_Penn-F-9 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-F-9	RNA2	PQ625048	PQ625048 Galbut virus isolate D_mel_USA_2023_Penn-F-9 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-9	RNA3	PQ624943	PQ624943 Galbut virus isolate D_mel_USA_2023_Penn-F-9 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-9	Chaq	PQ625206	PQ625206 Chaq virus isolate D_mel_USA_2023_Penn-F-9 hypothetical protein gene, complete cds
+500-M-71-2	RNA1	PQ625073	PQ625073 Galbut virus isolate D_mel_USA_2023_500-M-71-2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-71-2	RNA2	PQ624970	PQ624970 Galbut virus isolate D_mel_USA_2023_500-M-71-2 segment RNA2 putative capsid protein gene, complete cds
+500-M-71-2	RNA3	PQ624861	PQ624861 Galbut virus isolate D_mel_USA_2023_500-M-71-2 segment RNA3 hypothetical protein gene, complete cds
+500-M-71-2	Chaq	PQ625163	PQ625163 Chaq virus isolate D_mel_USA_2023_500-M-71-2 hypothetical protein gene, complete cds
+ME-F-3	RNA1	PQ625119	PQ625119 Galbut virus isolate D_mel_USA_2023_ME-F-3 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-F-3	RNA2	PQ625017	PQ625017 Galbut virus isolate D_mel_USA_2023_ME-F-3 segment RNA2 putative capsid protein gene, complete cds
+ME-F-3	RNA3	PQ624912	PQ624912 Galbut virus isolate D_mel_USA_2023_ME-F-3 segment RNA3 hypothetical protein gene, complete cds
+ME-F-3	Chaq	PQ625190	PQ625190 Chaq virus isolate D_mel_USA_2023_ME-F-3 hypothetical protein gene, complete cds
+Peach-9-F8	RNA1	PQ625139	PQ625139 Galbut virus isolate D_mel_USA_2023_Peach-9-F8 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Peach-9-F8	RNA2	PQ625038	PQ625038 Galbut virus isolate D_mel_USA_2023_Peach-9-F8 segment RNA2 putative capsid protein gene, complete cds
+Peach-9-F8	RNA3	PQ624934	PQ624934 Galbut virus isolate D_mel_USA_2023_Peach-9-F8 segment RNA3 hypothetical protein gene, complete cds
+CVID-0911-F4	RNA1	PQ625111	PQ625111 Galbut virus isolate D_mel_USA_2023_CVID-0911-F4 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+CVID-0911-F4	RNA2	PQ625008	PQ625008 Galbut virus isolate D_mel_USA_2023_CVID-0911-F4 segment RNA2 putative capsid protein gene, complete cds
+CVID-0911-F4	RNA3	PQ624903	PQ624903 Galbut virus isolate D_mel_USA_2023_CVID-0911-F4 segment RNA3 hypothetical protein gene, complete cds
+CVID-0911-F4	Chaq	PQ625181	PQ625181 Chaq virus isolate D_mel_USA_2023_CVID-0911-F4 hypothetical protein gene, complete cds
+CVID-0825-B1	RNA1	PQ625109	PQ625109 Galbut virus isolate D_mel_USA_2023_CVID-0825-B1 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+CVID-0825-B1	RNA2	PQ625006	PQ625006 Galbut virus isolate D_mel_USA_2023_CVID-0825-B1 segment RNA2 putative capsid protein gene, complete cds
+CVID-0825-B1	RNA3	PQ624901	PQ624901 Galbut virus isolate D_mel_USA_2023_CVID-0825-B1 segment RNA3 hypothetical protein gene, complete cds
+Adobe-C2	RNA1	PQ625107	PQ625107 Galbut virus isolate D_mel_USA_2023_Adobe-C2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Adobe-C2	RNA2	PQ625004	PQ625004 Galbut virus isolate D_mel_USA_2023_Adobe-C2 segment RNA2 putative capsid protein gene, complete cds
+Adobe-C2	RNA3	PQ624899	PQ624899 Galbut virus isolate D_mel_USA_2023_Adobe-C2 segment RNA3 hypothetical protein gene, complete cds
+Adobe-B6	RNA1	PQ625105	PQ625105 Galbut virus isolate D_mel_USA_2023_Adobe-B6 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Adobe-B6	RNA2	PQ625002	PQ625002 Galbut virus isolate D_mel_USA_2023_Adobe-B6 segment RNA2 putative capsid protein gene, complete cds
+Adobe-B6	RNA3	PQ624897	PQ624897 Galbut virus isolate D_mel_USA_2023_Adobe-B6 segment RNA3 hypothetical protein gene, complete cds
+1020-M-8	RNA1	PQ625093	PQ625093 Galbut virus isolate D_mel_USA_2023_1020-M-8 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-M-8	RNA2	PQ624990	PQ624990 Galbut virus isolate D_mel_USA_2023_1020-M-8 segment RNA2 putative capsid protein gene, complete cds
+1020-M-8	RNA3	PQ624883	PQ624883 Galbut virus isolate D_mel_USA_2023_1020-M-8 segment RNA3 hypothetical protein gene, complete cds
+ME-M-19	RNA1	PQ625132	PQ625132 Galbut virus isolate D_mel_USA_2023_ME-M-19 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-19	RNA2	PQ625031	PQ625031 Galbut virus isolate D_mel_USA_2023_ME-M-19 segment RNA2 putative capsid protein gene, complete cds
+ME-M-19	RNA3	PQ624927	PQ624927 Galbut virus isolate D_mel_USA_2023_ME-M-19 segment RNA3 hypothetical protein gene, complete cds
+1020-M-0818-A7	RNA1	PQ625096	PQ625096 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A7 segment RNA1 putative RNA-dependent RNA polymerase gene, partial cds
+1020-M-0818-A7	RNA2	PQ624993	PQ624993 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A7 segment RNA2 putative capsid protein gene, complete cds
+1020-M-0818-A7	RNA3	PQ624886	PQ624886 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A7 segment RNA3 hypothetical protein gene, complete cds
+1020-M-0818-A7	Chaq	PQ625175	PQ625175 Chaq virus isolate D_mel_USA_2023_1020-M-0818-A7 hypothetical protein gene, complete cds
+Myrtle-D11	RNA1	PQ625135	PQ625135 Galbut virus isolate D_mel_USA_2023_Myrtle-D11 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Myrtle-D11	RNA2	PQ625034	PQ625034 Galbut virus isolate D_mel_USA_2023_Myrtle-D11 segment RNA2 putative capsid protein gene, complete cds
+Myrtle-D11	RNA3	PQ624930	PQ624930 Galbut virus isolate D_mel_USA_2023_Myrtle-D11 segment RNA3 hypothetical protein gene, complete cds
+1428-M-21	RNA1	PQ625102	PQ625102 Galbut virus isolate D_mel_USA_2023_1428-M-21 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1428-M-21	RNA2	PQ624999	PQ624999 Galbut virus isolate D_mel_USA_2023_1428-M-21 segment RNA2 putative capsid protein gene, complete cds
+1428-M-21	RNA3	PQ624894	PQ624894 Galbut virus isolate D_mel_USA_2023_1428-M-21 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-14	RNA1	PQ625151	PQ625151 Galbut virus isolate D_mel_USA_2023_Penn-M-14 segment RNA1 putative RNA-dependent RNA polymerase gene, partial cds
+Penn-M-14	RNA2	PQ625054	PQ625054 Galbut virus isolate D_mel_USA_2023_Penn-M-14 segment RNA2 putative capsid protein gene, complete cds
+Penn-M-14	RNA3	PQ624950	PQ624950 Galbut virus isolate D_mel_USA_2023_Penn-M-14 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-14	Chaq	PQ625213	PQ625213 Chaq virus isolate D_mel_USA_2023_Penn-M-14 hypothetical protein gene, complete cds
+ME-M-7	RNA1	PQ625124	PQ625124 Galbut virus isolate D_mel_USA_2023_ME-M-7_1 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-7	RNA1	PQ625125	PQ625125 Galbut virus isolate D_mel_USA_2023_ME-M-7_2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-7	RNA2	PQ625023	PQ625023 Galbut virus isolate D_mel_USA_2023_ME-M-7_1 segment RNA2 putative capsid protein gene, complete cds
+ME-M-7	RNA2	PQ625024	PQ625024 Galbut virus isolate D_mel_USA_2023_ME-M-7_2 segment RNA2 putative capsid protein gene, complete cds
+ME-M-7	RNA3	PQ624918	PQ624918 Galbut virus isolate D_mel_USA_2023_ME-M-7_1 segment RNA3 hypothetical protein gene, complete cds
+ME-M-7	RNA3	PQ624919	PQ624919 Galbut virus isolate D_mel_USA_2023_ME-M-7_2 segment RNA3 hypothetical protein gene, complete cds
+ME-M-7	Chaq	PQ625194	PQ625194 Chaq virus isolate D_mel_USA_2023_ME-M-7_1 hypothetical protein gene, complete cds
+ME-M-17	RNA1	PQ625130	PQ625130 Galbut virus isolate D_mel_USA_2023_ME-M-17 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-17	RNA2	PQ625029	PQ625029 Galbut virus isolate D_mel_USA_2023_ME-M-17 segment RNA2 putative capsid protein gene, complete cds
+ME-M-17	RNA3	PQ624925	PQ624925 Galbut virus isolate D_mel_USA_2023_ME-M-17 segment RNA3 hypothetical protein gene, complete cds
+500-M-17	RNA1	PQ625065	PQ625065 Galbut virus isolate D_mel_USA_2023_500-M-17 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-17	RNA2	PQ624962	PQ624962 Galbut virus isolate D_mel_USA_2023_500-M-17 segment RNA2 putative capsid protein gene, complete cds
+500-M-17	RNA3	PQ624852	PQ624852 Galbut virus isolate D_mel_USA_2023_500-M-17 segment RNA3 hypothetical protein gene, complete cds
+500-M-17	Chaq	PQ625157	PQ625157 Chaq virus isolate D_mel_USA_2023_500-M-17 hypothetical protein gene, complete cds
+ME-M-4	RNA1	PQ625122	PQ625122 Galbut virus isolate D_mel_USA_2023_ME-M-4 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-4	RNA2	PQ625021	PQ625021 Galbut virus isolate D_mel_USA_2023_ME-M-4 segment RNA2 putative capsid protein gene, complete cds
+ME-M-4	RNA3	PQ624916	PQ624916 Galbut virus isolate D_mel_USA_2023_ME-M-4 segment RNA3 hypothetical protein gene, complete cds
+1020-F-36	RNA1	PQ625087	PQ625087 Galbut virus isolate D_mel_USA_2023_1020-F-36 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-F-36	RNA2	PQ624984	PQ624984 Galbut virus isolate D_mel_USA_2023_1020-F-36 segment RNA2 putative capsid protein gene, complete cds
+1020-F-36	RNA3	PQ624876	PQ624876 Galbut virus isolate D_mel_USA_2023_1020-F-36 segment RNA3 hypothetical protein gene, complete cds
+Briarwood-D9	RNA1	PQ625108	PQ625108 Galbut virus isolate D_mel_USA_2023_Briarwood-D9 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Briarwood-D9	RNA2	PQ625005	PQ625005 Galbut virus isolate D_mel_USA_2023_Briarwood-D9 segment RNA2 putative capsid protein gene, complete cds
+Briarwood-D9	RNA3	PQ624900	PQ624900 Galbut virus isolate D_mel_USA_2023_Briarwood-D9 segment RNA3 hypothetical protein gene, complete cds
+Briarwood-D9	Chaq	PQ625180	PQ625180 Chaq virus isolate D_mel_USA_2023_Briarwood-D9 hypothetical protein gene, complete cds
+1020-G3	RNA1	PQ625092	PQ625092 Galbut virus isolate D_mel_USA_2023_1020-G3 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-G3	RNA2	PQ624989	PQ624989 Galbut virus isolate D_mel_USA_2023_1020-G3 segment RNA2 putative capsid protein gene, complete cds
+1020-G3	RNA3	PQ624882	PQ624882 Galbut virus isolate D_mel_USA_2023_1020-G3 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-6	RNA2	PQ625046	PQ625046 Galbut virus isolate D_mel_USA_2023_Penn-F-6_1 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-6	RNA2	PQ625047	PQ625047 Galbut virus isolate D_mel_USA_2023_Penn-F-6_2 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-6	Chaq	PQ625205	PQ625205 Chaq virus isolate D_mel_USA_2023_Penn-F-6 hypothetical protein gene, complete cds
+OH-M-5	RNA1	PQ625137	PQ625137 Galbut virus isolate D_mel_USA_2023_OH-M-5 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+OH-M-5	RNA2	PQ625036	PQ625036 Galbut virus isolate D_mel_USA_2023_OH-M-5 segment RNA2 putative capsid protein gene, complete cds
+OH-M-5	RNA3	PQ624932	PQ624932 Galbut virus isolate D_mel_USA_2023_OH-M-5 segment RNA3 hypothetical protein gene, complete cds
+OH-M-5	Chaq	PQ625198	PQ625198 Chaq virus isolate D_mel_USA_2023_OH-M-5 hypothetical protein gene, complete cds
+ME-M-1	RNA1	PQ625120	PQ625120 Galbut virus isolate D_mel_USA_2023_ME-M-1 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-1	RNA2	PQ625019	PQ625019 Galbut virus isolate D_mel_USA_2023_ME-M-1 segment RNA2 putative capsid protein gene, complete cds
+ME-M-1	RNA3	PQ624914	PQ624914 Galbut virus isolate D_mel_USA_2023_ME-M-1 segment RNA3 hypothetical protein gene, complete cds
+ME-M-1	Chaq	PQ625191	PQ625191 Chaq virus isolate D_mel_USA_2023_ME-M-1 hypothetical protein gene, complete cds
+1428-M-3	RNA1	PQ625100	PQ625100 Galbut virus isolate D_mel_USA_2023_1428-M-3 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1428-M-3	RNA2	PQ624997	PQ624997 Galbut virus isolate D_mel_USA_2023_1428-M-3 segment RNA2 putative capsid protein gene, complete cds
+1428-M-3	RNA3	PQ624890	PQ624890 Galbut virus isolate D_mel_USA_2023_1428-M-3_1 segment RNA3 hypothetical protein gene, complete cds
+1428-M-3	RNA3	PQ624891	PQ624891 Galbut virus isolate D_mel_USA_2023_1428-M-3_2 segment RNA3 hypothetical protein gene, complete cds
+CVID-0825-C10	RNA1	PQ625110	PQ625110 Galbut virus isolate D_mel_USA_2023_CVID-0825-C10 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+CVID-0825-C10	RNA2	PQ625007	PQ625007 Galbut virus isolate D_mel_USA_2023_CVID-0825-C10 segment RNA2 putative capsid protein gene, complete cds
+CVID-0825-C10	RNA3	PQ624902	PQ624902 Galbut virus isolate D_mel_USA_2023_CVID-0825-C10 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-12	RNA1	PQ625147	PQ625147 Galbut virus isolate D_mel_USA_2023_Penn-F-12 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-F-12	RNA2	PQ625049	PQ625049 Galbut virus isolate D_mel_USA_2023_Penn-F-12 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-12	RNA3	PQ624944	PQ624944 Galbut virus isolate D_mel_USA_2023_Penn-F-12 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-12	Chaq	PQ625207	PQ625207 Chaq virus isolate D_mel_USA_2023_Penn-F-12 hypothetical protein gene, complete cds
+1020-F-31	RNA1	PQ625086	PQ625086 Galbut virus isolate D_mel_USA_2023_1020-F-31 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-F-31	RNA2	PQ624983	PQ624983 Galbut virus isolate D_mel_USA_2023_1020-F-31 segment RNA2 putative capsid protein gene, complete cds
+1020-F-31	RNA3	PQ624875	PQ624875 Galbut virus isolate D_mel_USA_2023_1020-F-31 segment RNA3 hypothetical protein gene, complete cds
+1020-F-31	Chaq	PQ625170	PQ625170 Chaq virus isolate D_mel_USA_2023_1020-F-31 hypothetical protein gene, complete cds
+Myrtle-D5	RNA1	PQ625134	PQ625134 Galbut virus isolate D_mel_USA_2023_Myrtle-D5 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Myrtle-D5	RNA2	PQ625033	PQ625033 Galbut virus isolate D_mel_USA_2023_Myrtle-D5 segment RNA2 putative capsid protein gene, complete cds
+Myrtle-D5	RNA3	PQ624929	PQ624929 Galbut virus isolate D_mel_USA_2023_Myrtle-D5 segment RNA3 hypothetical protein gene, complete cds
+1020-F-44	RNA1	PQ625089	PQ625089 Galbut virus isolate D_mel_USA_2023_1020-F-44 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-F-44	RNA2	PQ624986	PQ624986 Galbut virus isolate D_mel_USA_2023_1020-F-44 segment RNA2 putative capsid protein gene, complete cds
+1020-F-44	RNA3	PQ624879	PQ624879 Galbut virus isolate D_mel_USA_2023_1020-F-44 segment RNA3 hypothetical protein gene, complete cds
+ME-M-2	RNA1	PQ625121	PQ625121 Galbut virus isolate D_mel_USA_2023_ME-M-2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+ME-M-2	RNA2	PQ625020	PQ625020 Galbut virus isolate D_mel_USA_2023_ME-M-2 segment RNA2 putative capsid protein gene, complete cds
+ME-M-2	RNA3	PQ624915	PQ624915 Galbut virus isolate D_mel_USA_2023_ME-M-2 segment RNA3 hypothetical protein gene, complete cds
+ME-M-2	Chaq	PQ625192	PQ625192 Chaq virus isolate D_mel_USA_2023_ME-M-2_1 hypothetical protein gene, complete cds
+ME-M-2	Chaq	PQ625193	PQ625193 Chaq virus isolate D_mel_USA_2023_ME-M-2_2 hypothetical protein gene, complete cds
+1428-M-42	RNA1	PQ625103	PQ625103 Galbut virus isolate D_mel_USA_2023_1428-M-42 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1428-M-42	RNA2	PQ625000	PQ625000 Galbut virus isolate D_mel_USA_2023_1428-M-42 segment RNA2 putative capsid protein gene, complete cds
+1428-M-42	RNA3	PQ624895	PQ624895 Galbut virus isolate D_mel_USA_2023_1428-M-42 segment RNA3 hypothetical protein gene, complete cds
+1428-M-42	Chaq	PQ625178	PQ625178 Chaq virus isolate D_mel_USA_2023_1428-M-42 hypothetical protein gene, complete cds
+500-M-83	RNA1	PQ625074	PQ625074 Galbut virus isolate D_mel_USA_2023_500-M-83 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-83	RNA2	PQ624971	PQ624971 Galbut virus isolate D_mel_USA_2023_500-M-83 segment RNA2 putative capsid protein gene, complete cds
+500-M-83	RNA3	PQ624862	PQ624862 Galbut virus isolate D_mel_USA_2023_500-M-83 segment RNA3 hypothetical protein gene, complete cds
+500-M-60	RNA1	PQ625068	PQ625068 Galbut virus isolate D_mel_USA_2023_500-M-60 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-60	RNA2	PQ624965	PQ624965 Galbut virus isolate D_mel_USA_2023_500-M-60 segment RNA2 putative capsid protein gene, complete cds
+500-M-60	RNA3	PQ624855	PQ624855 Galbut virus isolate D_mel_USA_2023_500-M-60_1 segment RNA3 hypothetical protein gene, complete cds
+500-M-60	RNA3	PQ624856	PQ624856 Galbut virus isolate D_mel_USA_2023_500-M-60_2 segment RNA3 hypothetical protein gene, complete cds
+mel-20-TD-3	RNA1	PQ625057	PQ625057 Galbut virus isolate D_mel_USA_2020_mel-20-TD-3 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+mel-20-TD-3	RNA2	PQ624953	PQ624953 Galbut virus isolate D_mel_USA_2020_mel-20-TD-3 segment RNA2 putative capsid protein gene, complete cds
+mel-20-TD-3	RNA3	PQ624841	PQ624841 Galbut virus isolate D_mel_USA_2020_mel-20-TD-3_1 segment RNA3 hypothetical protein gene, complete cds
+mel-20-TD-3	RNA3	PQ624842	PQ624842 Galbut virus isolate D_mel_USA_2020_mel-20-TD-3_2 segment RNA3 hypothetical protein gene, complete cds
+500-M-16	RNA1	PQ625064	PQ625064 Galbut virus isolate D_mel_USA_2023_500-M-16 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-16	RNA2	PQ624961	PQ624961 Galbut virus isolate D_mel_USA_2023_500-M-16 segment RNA2 putative capsid protein gene, complete cds
+500-M-16	RNA3	PQ624851	PQ624851 Galbut virus isolate D_mel_USA_2023_500-M-16 segment RNA3 hypothetical protein gene, complete cds
+1020-D1	RNA1	PQ625082	PQ625082 Galbut virus isolate D_mel_USA_2023_1020-D1 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-D1	RNA2	PQ624979	PQ624979 Galbut virus isolate D_mel_USA_2023_1020-D1 segment RNA2 putative capsid protein gene, complete cds
+1020-D1	RNA3	PQ624871	PQ624871 Galbut virus isolate D_mel_USA_2023_1020-D1 segment RNA3 hypothetical protein gene, complete cds
+1428-M-6	RNA3	PQ624893	PQ624893 Galbut virus isolate D_mel_USA_2023_1428-M-6 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-3	RNA1	PQ625143	PQ625143 Galbut virus isolate D_mel_USA_2023_Penn-F-3 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-F-3	RNA2	PQ625043	PQ625043 Galbut virus isolate D_mel_USA_2023_Penn-F-3 segment RNA2 putative capsid protein gene, complete cds
+Penn-F-3	RNA3	PQ624940	PQ624940 Galbut virus isolate D_mel_USA_2023_Penn-F-3 segment RNA3 hypothetical protein gene, complete cds
+Penn-F-3	Chaq	PQ625203	PQ625203 Chaq virus isolate D_mel_USA_2023_Penn-F-3 hypothetical protein gene, complete cds
+ME-F-9	RNA2	PQ625018	PQ625018 Galbut virus isolate D_mel_USA_2023_ME-F-9 segment RNA2 putative capsid protein gene, complete cds
+ME-F-9	RNA3	PQ624913	PQ624913 Galbut virus isolate D_mel_USA_2023_ME-F-9 segment RNA3 hypothetical protein gene, complete cds
+500-M-G2	RNA1	PQ625078	PQ625078 Galbut virus isolate D_mel_USA_2023_500-M-G2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-G2	RNA2	PQ624975	PQ624975 Galbut virus isolate D_mel_USA_2023_500-M-G2 segment RNA2 putative capsid protein gene, complete cds
+500-M-G2	RNA3	PQ624866	PQ624866 Galbut virus isolate D_mel_USA_2023_500-M-G2 segment RNA3 hypothetical protein gene, complete cds
+CVID-1006-H3	RNA1	PQ625115	PQ625115 Galbut virus isolate D_mel_USA_2023_CVID-1006-H3 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+CVID-1006-H3	RNA2	PQ625012	PQ625012 Galbut virus isolate D_mel_USA_2023_CVID-1006-H3 segment RNA2 putative capsid protein gene, complete cds
+CVID-1006-H3	RNA3	PQ624907	PQ624907 Galbut virus isolate D_mel_USA_2023_CVID-1006-H3 segment RNA3 hypothetical protein gene, complete cds
+CVID-1006-H3	Chaq	PQ625185	PQ625185 Chaq virus isolate D_mel_USA_2023_CVID-1006-H3 hypothetical protein gene, complete cds
+500-M-65-2	RNA1	PQ625071	PQ625071 Galbut virus isolate D_mel_USA_2023_500-M-65-2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+500-M-65-2	RNA2	PQ624968	PQ624968 Galbut virus isolate D_mel_USA_2023_500-M-65-2 segment RNA2 putative capsid protein gene, complete cds
+500-M-65-2	RNA3	PQ624859	PQ624859 Galbut virus isolate D_mel_USA_2023_500-M-65-2 segment RNA3 hypothetical protein gene, complete cds
+500-M-65-2	Chaq	PQ625161	PQ625161 Chaq virus isolate D_mel_USA_2023_500-M-65-2 hypothetical protein gene, complete cds
+Penn-M-2	RNA1	PQ625148	PQ625148 Galbut virus isolate D_mel_USA_2023_Penn-M-2 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+Penn-M-2	RNA2	PQ625050	PQ625050 Galbut virus isolate D_mel_USA_2023_Penn-M-2 segment RNA2 putative capsid protein gene, complete cds
+Penn-M-2	RNA3	PQ624945	PQ624945 Galbut virus isolate D_mel_USA_2023_Penn-M-2_1 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-2	RNA3	PQ624946	PQ624946 Galbut virus isolate D_mel_USA_2023_Penn-M-2_2 segment RNA3 hypothetical protein gene, complete cds
+Penn-M-2	Chaq	PQ625208	PQ625208 Chaq virus isolate D_mel_USA_2023_Penn-M-2_1 hypothetical protein gene, complete cds
+1020-M-0818-A5	RNA1	PQ625095	PQ625095 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A5 segment RNA1 putative RNA-dependent RNA polymerase gene, complete cds
+1020-M-0818-A5	RNA2	PQ624992	PQ624992 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A5 segment RNA2 putative capsid protein gene, complete cds
+1020-M-0818-A5	RNA3	PQ624885	PQ624885 Galbut virus isolate D_mel_USA_2023_1020-M-0818-A5 segment RNA3 hypothetical protein gene, complete cds
+1020-M-0818-A5	Chaq	PQ625174	PQ625174 Chaq virus isolate D_mel_USA_2023_1020-M-0818-A5 hypothetical protein gene, complete cds

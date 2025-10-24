@@ -1,0 +1,200 @@
+#!/usr/bin/env perl
+
+use strict;
+use Getopt::Long;
+use Data::Dumper;
+
+my $print_usage = 0;
+
+my $usage = <<USAGE;
+
+  This script takes a fasta file with all DC galbut virus sequences
+  and splits them up by sample ID into individual fasta files with 
+  all seqs for each sample.
+
+  Mark Stenglein,  10/21/2024
+
+  Usage: $0 [-h] sample_sheet_file all_fasta
+
+   [-h]          print this message
+
+USAGE
+
+if ((scalar @ARGV == 0) and -t STDIN) { print $usage and exit; }
+
+GetOptions ("h" => \$print_usage);
+
+my $sample_file    = shift or die $usage;
+my $all_fasta_file = shift or die $usage;
+
+# open some input files
+open (my $sample_fh,    "<", $sample_file)    or die;
+open (my $all_fasta_fh, "<", $all_fasta_file) or die;
+
+# open up some output files
+open (my $segs_per_sample_fh,      ">", "segments_per_sample.txt") or die;
+open (my $sample_accession_map_fh, ">", "sample_accession_map.txt") or die;
+
+my %sample_ids = ();
+my $first_line = 1;
+
+# read mapping sample sheet to get sample IDS and file names
+while (<$sample_fh>) {
+   chomp;
+
+   # skip first header line
+   if ($first_line) { $first_line = 0; next; }
+   my @fields = split "\t";
+
+   my $sample_id   = $fields[0];
+   my $sample_file = $fields[1];
+
+   # check expected sample file name
+   my $expected_file_name = "virus_refseq/" . $sample_id . ".fasta";
+
+   if ($expected_file_name ne $sample_file) {
+      warn "WARNING: unexpected sample file name for sample: $sample_id -> $sample_file (expected: $expected_file_name)\n";
+   }
+
+   # store ID and corresponding file name 
+   $sample_ids{$sample_id}{file} = $sample_file;
+}
+
+# hash of sequences
+my %sequences = ();
+
+# read in all fasta
+while (<$all_fasta_fh>) {
+   chomp;
+   if (/^>(.*)/) 
+   {
+      my $seq_id = $1;
+
+      # try to parse metadata out of sequence name
+      # if (/D_(sim|mel)_(\S+)_(\d{4})_(.*)_(Galbut|Chaq)/) {
+      if (/ D_(sim|mel)_(\S+)_(\d{4})_([^ ]+) /) {
+         my $species   = $1;
+         my $location  = $2;
+         my $date      = $3;
+         my $sample_id = $4;
+
+         # sample sample IDs end in _1 or _2 for 1st / 2nd instance of a segment in a sample
+         if ($sample_id =~ /(.*)_[12]$/) {
+            $sample_id = $1;
+         }
+
+         if (!defined $sample_ids{$sample_id}{file}) {
+            die "ERROR: unexpected sample id: $sample_id\n";
+         }
+
+         # now try to parse out RNA 1-3 or chaq
+         my $segment = undef;
+         if (/(Galbut|Chaq)/) {
+            if ($1 eq "Chaq") {
+               $segment = $1;
+            } 
+            elsif (/(RNA[123])/) {
+               $segment = $1;
+            }
+         }
+         if (!defined $segment)  {
+            die "ERROR: couldn't extract segment identity from sequence:\n$_\n";
+         }
+
+         # keep track of # of different segments in each sample
+         # increment sample ID segment counter
+         if (!defined $sample_ids{$sample_id}{$segment}) {
+            # $sample_ids{$sample_id}{$segment} = 1;
+            @{$sample_ids{$sample_id}{$segment}} = ($seq_id);
+         } 
+         else {
+            # $sample_ids{$sample_id}{$segment} += 1;
+            push @{$sample_ids{$sample_id}{$segment}}, $seq_id
+         }
+
+         # store sequence for later writing out
+         # assume one-line fasta format; read next line
+         my $sequence = <$all_fasta_fh>;
+         $sequences{$sample_id}{$seq_id} = $sequence;
+
+      } else
+      {
+         die "ERROR: couldn't extract patterns from sequence: \n$_\n";
+      }
+   }
+   else {
+      die "ERROR: was expecting a fasta header (not 1-line fasta format?).  Instead got: \n$_\n";
+   }
+}
+
+# print Dumper(\%sequences);
+
+# output sequences
+
+# for each sample ID in sample sheet
+foreach my $sample_id (keys %sample_ids) {
+   # warn "$sample_id\n";
+
+   # check that there are sequences for each sample ID in mappin gsample sheet
+   if (!defined $sequences{$sample_id}) {
+      warn "WARNING: no sequences defined for sample ID: $sample_id\n";
+      next;
+   }
+
+   # open an output file
+   my $output_file = $sample_ids{$sample_id}{file};
+
+   # make dir if necessary
+   mkdir "virus_refseq";
+
+   open (my $output_fh, ">", $output_file) or die "ERROR: couldn't open output file: $output_file\n";
+
+   # write out each seq in fasta
+   my $hash_ref = $sequences{$sample_id};
+   # print Dumper($hash_ref);
+   foreach my $seq_id (keys %{$hash_ref}){
+      my $sequence = $sequences{$sample_id}{$seq_id};
+      print $output_fh ">$seq_id\n$sequence\n";
+   }
+
+   # close output file
+   close ($output_fh);
+
+   # output number of segments per sample in tidy format
+   my $sample_hashref = $sample_ids{$sample_id};
+   foreach my $segment (qw (RNA1 RNA2 RNA3 Chaq)) {
+      if (!defined $$sample_hashref{$segment}) {
+         print $segs_per_sample_fh "$sample_id\t$segment\t0\n";
+      }
+      else {
+         # print $segs_per_sample_fh "$sample_id\t$segment\t$$sample_hashref{$segment}\n";
+         my $num_segments = scalar @{$$sample_hashref{$segment}};
+         print $segs_per_sample_fh "$sample_id\t$segment\t$num_segments\n";
+      }
+   }
+
+   # output map of sample ID -> segment -> accession
+   my $sample_hashref = $sample_ids{$sample_id};
+   foreach my $segment (qw (RNA1 RNA2 RNA3 Chaq)) {
+      if (!defined $$sample_hashref{$segment}) {
+         # print $sample_accession_map "$sample_id\t$segment\t0\n";
+         # do nothing
+      }
+      else {
+         my @seq_ids = @{$$sample_hashref{$segment}};
+         foreach my $seq_id (@seq_ids){
+            # parse out accession - text up to first white space in sequence ID
+            my $accession = "";
+            if ($seq_id =~ /^(\S+) /){ 
+               $accession = $1;
+            } else {
+               die ("error: couldn't parse accession out of sequence: $seq_id\n");
+            }
+            print $sample_accession_map_fh "$sample_id\t$segment\t$accession\t$seq_id\n";
+         }
+      }
+   }
+
+}
+
+
