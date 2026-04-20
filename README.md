@@ -157,10 +157,19 @@ Some of the main configurable parameters include:
 - mapping_sample_sheet: the path to a [mapping samplesheet](#Mapping-samplesheet)
 
 #### Parameters to run optional pipeline steps
+
+##### Strand Bias
 - quantify_strand_bias: a boolean to turn on or off strand bias quantification [default: true].  Turn off if you don't have strand-specific data.
 - R1_antisense_orientation: a boolean indicating that read 1s are in the antisense orientation relative to the original RNA molecule for stand-specific RNA libraries [default: true]
+
+##### Per-base coverage
 - skip_per_base_coverage: a boolean that can be turned on to turn off per-base coverage output [default: false].  
+
+##### Insert sizes
 - tabulate_insert_sizes: a boolean to turn on tabulation of insert sizes [default: true].  Calculating insert sizes requires paired-end data.  Turn off if you are analyzing single-end data. 
+
+##### Consensus generation 
+
 - generate_consensus_sequences: a boolean to turn on generation of new consensus sequences from mapped reads [default: off].  If going to be doing consensus generation, there are several related configurable parameters:
  - mapped_read_cutoff: The maximum number of mapped reads to a reference sequence in order to attempt consensus calling [default: 1]
  - illumina_min_qual: The minimum basecall Q score for a base to contribute to consensus calling [default: 30] 
