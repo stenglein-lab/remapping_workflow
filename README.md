@@ -170,11 +170,13 @@ Some of the main configurable parameters include:
 
 ##### Consensus generation 
 
-- generate_consensus_sequences: a boolean to turn on generation of new consensus sequences from mapped reads [default: off].  If going to be doing consensus generation, there are several related configurable parameters:
- - mapped_read_cutoff: The maximum number of mapped reads to a reference sequence in order to attempt consensus calling [default: 1]
- - illumina_min_qual: The minimum basecall Q score for a base to contribute to consensus calling [default: 30] 
- - illumina_min_depth: The minimum coverage depth at a position to be non-N in consensus sequence [default: 4]
- - illumina_min_freq: The minimum frequency to call a consensus base at a position. E.g. 0.5: 50% consensus: plurality base, must be >50% [default: 0.5]
+Optional consensus sequence generation with [ViralConsensus](https://pubmed.ncbi.nlm.nih.gov/37171896/)
+
+- generate_consensus_sequences: a boolean to turn on generation of new consensus sequences from mapped reads [default: off]
+- mapped_read_cutoff: The maximum number of mapped reads to a reference sequence in order to attempt consensus calling [default: 1]
+- illumina_min_qual: The minimum basecall Q score for a base to contribute to consensus calling [default: 30] 
+- illumina_min_depth: The minimum coverage depth at a position to be non-N in consensus sequence [default: 4]
+- illumina_min_freq: The minimum frequency to call a consensus base at a position. E.g. 0.5: 50% consensus: plurality base, must be >50% [default: 0.5]
 
 
 See [nextflow.config](nextflow.config) for more information.
