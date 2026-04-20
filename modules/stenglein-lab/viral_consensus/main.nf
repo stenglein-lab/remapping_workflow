@@ -13,12 +13,12 @@ process VIRAL_CONSENSUS {
     val(min_freq)
 
     output:
-    tuple val(meta), path(ref_fasta), path("*.consensus.fa") , emit: refseq_and_new
-    tuple val(meta), path("*.consensus.fa")                  , emit: fasta
+    tuple val(meta), path(ref_fasta), path("*.consensus.fasta") , emit: refseq_and_new
+    tuple val(meta), path("*.consensus.fasta")                  , emit: fasta
     tuple val(meta), path("*.position_counts.txt")           , emit: position_counts
     tuple val(meta), path(ref_fasta)                         , emit: refseq
     path "versions.yml"                                      , emit: versions
-
+  
     when:
     task.ext.when == null || task.ext.when
 
@@ -30,7 +30,7 @@ process VIRAL_CONSENSUS {
     viral_consensus \
         -i $bam \
         -r $ref_fasta \
-        -o ${ref_base}.consensus.not_renamed.fa \
+        -o ${ref_base}.consensus.not_renamed.fasta \
         -op ${ref_base}.position_counts.txt \
         -q $min_qual \
         -d $min_depth \
@@ -38,7 +38,7 @@ process VIRAL_CONSENSUS {
         $args 
 
     # rename fasta sequences: {sample_id}_{refseq_id}
-    sed "s/^>.*/>${meta.id}_${refseq.id}/"  ${ref_base}.consensus.not_renamed.fa > ${ref_base}.consensus.fa
+    sed "s/^>.*/>${meta.id}_${refseq.id}/"  ${ref_base}.consensus.not_renamed.fasta > ${ref_base}.consensus.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
