@@ -27,7 +27,6 @@
 process SETUP_R_DEPENDENCIES {
   label      'process_low'
   tag        "${R_packages}"
-  publishDir "${params.outdir}"
 
   // singularity info for this process
   if (workflow.containerEngine == 'singularity'){

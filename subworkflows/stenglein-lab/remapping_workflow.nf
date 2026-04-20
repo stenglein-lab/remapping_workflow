@@ -110,14 +110,16 @@ workflow REMAPPING_WORKFLOW {
 
  emit:
 
-  bam          = BOWTIE2_BUILD_ALIGN.out.bam
-  bowtie2_log  = BOWTIE2_BUILD_ALIGN.out.bam
-  coverage     = ch_coverage
-  stats        = ch_stats
-  depth        = ch_depth
-  insert_sizes = ch_insert_sizes
-  strand_bias  = ch_strand_bias
-  consensus    = ch_consensus_seqs
+  bam            = BOWTIE2_BUILD_ALIGN.out.bam
+  bowtie2_log    = BOWTIE2_BUILD_ALIGN.out.log
+  coverage       = ch_coverage
+  coverage_plots = PROCESS_WORKFLOW_OUTPUT.out.coverage_plots
+  stats          = ch_stats
+  depth          = ch_depth
+  insert_sizes   = ch_insert_sizes
+  strand_bias    = ch_strand_bias
+  consensus      = ch_consensus_seqs
+  samples        = mapping_ch
 
 }
 
