@@ -153,22 +153,20 @@ Some of the main configurable parameters include:
 #### Directories and paths
 - fastq_dir: the path to a directory containing fastq 
 - fastq_pattern: a pattern to match [fastq input](#Input-fastq)
-- outdir: the path of an output directory that will be created and populated with results.
+- outputDir: the path of an [output directory](https://docs.seqera.io/nextflow/workflow#publishing-files) that will be created and populated with results.  (Nextflow command line option `-output-dir` also works).
 - mapping_sample_sheet: the path to a [mapping samplesheet](#Mapping-samplesheet)
 
-#### Parameters to run optional pipeline steps
-
-##### Strand Bias
+#### Strand Bias
 - quantify_strand_bias: a boolean to turn on or off strand bias quantification [default: true].  Turn off if you don't have strand-specific data.
 - R1_antisense_orientation: a boolean indicating that read 1s are in the antisense orientation relative to the original RNA molecule for stand-specific RNA libraries [default: true]
 
-##### Per-base coverage
+#### Per-base coverage
 - skip_per_base_coverage: a boolean that can be turned on to turn off per-base coverage output [default: false].  
 
-##### Insert sizes
+#### Insert sizes
 - tabulate_insert_sizes: a boolean to turn on tabulation of insert sizes [default: true].  Calculating insert sizes requires paired-end data.  Turn off if you are analyzing single-end data. 
 
-##### Consensus generation 
+#### Consensus generation 
 
 Optional consensus sequence generation with [ViralConsensus](https://pubmed.ncbi.nlm.nih.gov/37171896/)
 
