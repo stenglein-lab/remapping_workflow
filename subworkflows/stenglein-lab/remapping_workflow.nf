@@ -6,6 +6,7 @@ include { MAPPING_STATS               } from '../../subworkflows/stenglein-lab/m
 include { EXTRACT_INSERT_SIZES        } from '../../modules/stenglein-lab/extract_insert_sizes'
 include { QUANTIFY_STRAND_BIAS        } from '../../subworkflows/stenglein-lab/quantify_strand_bias'
 include { PROCESS_WORKFLOW_OUTPUT     } from '../../subworkflows/stenglein-lab/process_workflow_output'
+include { GENERATE_CONSENSUS_SEQUENCE } from '../../subworkflows/stenglein-lab/generate_consensus_sequence'
 
 // these save consolidated tidy output files to results directory
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_COVERAGE     } from '../../modules/stenglein-lab/save_output_file'
@@ -35,16 +36,45 @@ workflow REMAPPING_WORKFLOW {
   def sort_bam = true
   BOWTIE2_BUILD_ALIGN (mapping_ch, save_unaligned, sort_bam)
 
+  // split up bams by mapped-to refseq if necessary
+  ch_split_bam       = Channel.empty()
+  ch_split_bam_fasta = Channel.empty()
+  if (params.tabulate_insert_sizes || params.generate_consensus_sequences){
+
+    // split up bam files into per-ref-seq bam files
+    SPLIT_BAM_BY_REFSEQ(BOWTIE2_BUILD_ALIGN.out.bam_fasta)
+
+    // assign output channels
+    ch_split_bam       = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam
+    ch_split_bam_fasta = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta
+  }
+
   // optionally extract insert sizes from mapped reads
   ch_insert_sizes = Channel.empty() 
   if (params.tabulate_insert_sizes) {
 
-    // split up bam files into per-ref-seq bam files
-    // samtools stats quantifies insert sizes but not per refseq
-    SPLIT_BAM_BY_REFSEQ(BOWTIE2_BUILD_ALIGN.out.bam_fasta)
-
     // extract insert sizes from bam using samtools stats
-    EXTRACT_INSERT_SIZES(SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam)
+    //
+    // use split up bam files into per-ref-seq bam files
+    // samtools stats quantifies insert sizes but not per refseq
+
+    EXTRACT_INSERT_SIZES(ch_split_bam)
+
+    ch_insert_sizes = ch_insert_sizes.mix(EXTRACT_INSERT_SIZES.out.insert_sizes)
+  }
+
+  // optionally generate new consensus sequences
+  ch_consensus_seqs = Channel.empty() 
+  if (params.generate_consensus_sequences) {
+
+     // params related to support needed for consensus calling
+     ch_min_qual  = Channel.value(params.illumina_min_qual)
+     ch_min_depth = Channel.value(params.illumina_min_depth)
+     ch_min_freq  = Channel.value(params.illumina_min_freq)
+
+    // create new consensus sequences 
+    GENERATE_CONSENSUS_SEQUENCE(ch_split_bam_fasta, ch_min_depth, ch_min_qual, ch_min_freq)
+    ch_consensus_seqs = GENERATE_CONSENSUS_SEQUENCE.out.new_fasta
 
     ch_insert_sizes = ch_insert_sizes.mix(EXTRACT_INSERT_SIZES.out.insert_sizes)
   }
@@ -87,6 +117,7 @@ workflow REMAPPING_WORKFLOW {
   depth        = ch_depth
   insert_sizes = ch_insert_sizes
   strand_bias  = ch_strand_bias
+  consensus    = ch_consensus_seqs
 
 }
 

@@ -161,6 +161,7 @@ Some of the main configurable parameters include:
 - R1_antisense_orientation: a boolean indicating that read 1s are in the antisense orientation relative to the original RNA molecule for stand-specific RNA libraries [default: true]
 - skip_per_base_coverage: a boolean that can be turned on to turn off per-base coverage output [default: false].  
 - tabulate_insert_sizes: a boolean to turn on tabulation of insert sizes [default: true].  Calculating insert sizes requires paired-end data.  Turn off if you are analyzing single-end data. 
+- generate_consensus_sequences: a boolean to turn on generation of new consensus sequences from mapped reads [default: off].
 
 See [nextflow.config](nextflow.config) for more information.
 
