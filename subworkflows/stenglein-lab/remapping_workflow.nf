@@ -74,7 +74,7 @@ workflow REMAPPING_WORKFLOW {
 
     // create new consensus sequences 
     GENERATE_CONSENSUS_SEQUENCE(ch_split_bam_fasta, ch_min_depth, ch_min_qual, ch_min_freq)
-    ch_consensus_seqs = GENERATE_CONSENSUS_SEQUENCE.out.new_fasta
+    ch_consensus_seqs = GENERATE_CONSENSUS_SEQUENCE.out.merged_fasta
 
     ch_insert_sizes = ch_insert_sizes.mix(EXTRACT_INSERT_SIZES.out.insert_sizes)
   }
