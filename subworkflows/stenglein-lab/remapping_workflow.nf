@@ -1,6 +1,7 @@
 include { PARSE_MAPPING_SAMPLESHEET   } from '../../subworkflows/stenglein-lab/parse_mapping_samplesheet'
 include { MARSHAL_FASTQ               } from '../../subworkflows/stenglein-lab/marshal_fastq'
-include { BOWTIE2_BUILD_ALIGN         } from '../../subworkflows/stenglein-lab/bowtie2_build_align'
+include { BOWTIE2_BUILD               } from '../../subworkflows/stenglein-lab/bowtie2_build_align'
+include { BOWTIE2_ALIGN               } from '../../subworkflows/stenglein-lab/bowtie2_build_align'
 include { SPLIT_BAM_BY_REFSEQ         } from '../../subworkflows/stenglein-lab/split_bam_by_refseq'
 include { MAPPING_STATS               } from '../../subworkflows/stenglein-lab/mapping_stats'
 include { EXTRACT_INSERT_SIZES        } from '../../modules/stenglein-lab/extract_insert_sizes'
@@ -31,10 +32,25 @@ workflow REMAPPING_WORKFLOW {
   // drop just sample ID, bring back in original meta
   mapping_ch = reads_ch.join(samplesheet_ch).map{id, meta, reads, fasta -> [meta, reads, fasta] }
 
+  // create one index per refseq fasta to avoid duplicate index building
+  // keep track of the original fasta path (toString()) because path to fasta
+  // can change once brought into work directories (e.g. in BOWTIE2_BUILD work dir)
+  refseq_fasta_ch = mapping_ch
+    .map { meta, reads, fasta -> [fasta.toString(), fasta] }
+    .unique { it[0] }          
+
+  // build indexes, one per fasta
+  BOWTIE2_BUILD(refseq_fasta_ch)        
+
+  // merge in indexes to original mapping ch
+  full_mapping_ch = mapping_ch
+    .map { meta, reads, fasta -> [fasta.toString(), fasta, meta, reads] }
+    .combine(BOWTIE2_BUILD.out.index.map{fasta_name, fasta, index_dir, index_base -> [fasta_name, index_dir, index_base]}, by: 0)
+    .map { fasta_name, fasta, meta, reads, index_dir, index_base -> [meta, reads, fasta, index_dir, index_base] }
+
   // run bowtie2 and align
   def save_unaligned = false
-  def sort_bam = true
-  BOWTIE2_BUILD_ALIGN (mapping_ch, save_unaligned, sort_bam)
+  BOWTIE2_ALIGN (full_mapping_ch, save_unaligned)
 
   // split up bams by mapped-to refseq if necessary
   ch_split_bam       = Channel.empty()
@@ -42,7 +58,7 @@ workflow REMAPPING_WORKFLOW {
   if (params.tabulate_insert_sizes || params.generate_consensus_sequences){
 
     // split up bam files into per-ref-seq bam files
-    SPLIT_BAM_BY_REFSEQ(BOWTIE2_BUILD_ALIGN.out.bam_fasta)
+    SPLIT_BAM_BY_REFSEQ(BOWTIE2_ALIGN.out.bam_fasta)
 
     // assign output channels
     ch_split_bam       = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam
@@ -82,13 +98,13 @@ workflow REMAPPING_WORKFLOW {
   // run optional workflow to quantify strand bias
   ch_strand_bias = Channel.empty()
   if (params.quantify_strand_bias) {
-    QUANTIFY_STRAND_BIAS (BOWTIE2_BUILD_ALIGN.out.bam, params.R1_antisense_orientation)
+    QUANTIFY_STRAND_BIAS (BOWTIE2_ALIGN.out.bam, params.R1_antisense_orientation)
     ch_strand_bias = ch_strand_bias.mix(QUANTIFY_STRAND_BIAS.out.strand_bias)
   }
 
   // tabulate mapping stats: samtools stats, coverage, and optionally per-base depth
   def per_base_coverage = !params.skip_per_base_coverage
-  MAPPING_STATS(BOWTIE2_BUILD_ALIGN.out.bam_fasta, per_base_coverage)
+  MAPPING_STATS(BOWTIE2_ALIGN.out.bam_fasta, per_base_coverage)
 
   // save consolidated output files
   SAVE_COLLECTED_COVERAGE    (MAPPING_STATS.out.prepended_coverage.collectFile(name: "collected_per_refseq_coverage.tsv"){it[1]})
@@ -110,8 +126,8 @@ workflow REMAPPING_WORKFLOW {
 
  emit:
 
-  bam            = BOWTIE2_BUILD_ALIGN.out.bam
-  bowtie2_log    = BOWTIE2_BUILD_ALIGN.out.log
+  bam            = BOWTIE2_ALIGN.out.bam
+  bowtie2_log    = BOWTIE2_ALIGN.out.log
   coverage       = ch_coverage
   coverage_plots = PROCESS_WORKFLOW_OUTPUT.out.coverage_plots
   stats          = ch_stats
