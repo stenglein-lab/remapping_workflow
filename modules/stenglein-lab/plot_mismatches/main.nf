@@ -1,6 +1,6 @@
-process PLOT_REFSEQ_COVERAGE {
+process PLOT_MISMATCHES {
   label 'process_single'
-  tag   "${depth}"
+  tag   "${mismatches}"
 
   // singularity info for this process
   if (workflow.containerEngine == 'singularity'){
@@ -8,12 +8,12 @@ process PLOT_REFSEQ_COVERAGE {
   }     
 
   input:
-  path (depth)
+  path (mismatches)
   path (R_lib_dir)
 
   output:
-  path "*.pdf"                       , emit: pdf
-  path "*.txt"                       , emit: txt
+  path "*.pdf"                       , emit: pdf, optional: true
+  path "*.txt"                       , emit: txt, optional: true
   // path "collected_coverage_plot.pdf" , emit: coverage_plot
 
   when:
@@ -24,7 +24,7 @@ process PLOT_REFSEQ_COVERAGE {
   def args             = task.ext.args ?: ''
 
   """
-   plot_refseq_coverage.R $depth $R_lib_dir
+   plot_mismatches.R $mismatches $R_lib_dir
   """
 
 }

@@ -4,6 +4,7 @@ include { BOWTIE2_BUILD_ALIGN         } from '../../subworkflows/stenglein-lab/b
 include { SPLIT_BAM_BY_REFSEQ         } from '../../subworkflows/stenglein-lab/split_bam_by_refseq'
 include { MAPPING_STATS               } from '../../subworkflows/stenglein-lab/mapping_stats'
 include { EXTRACT_INSERT_SIZES        } from '../../modules/stenglein-lab/extract_insert_sizes'
+include { QUANTIFY_MISMATCHES         } from '../../modules/stenglein-lab/quantify_mismatches'
 include { QUANTIFY_STRAND_BIAS        } from '../../subworkflows/stenglein-lab/quantify_strand_bias'
 include { PROCESS_WORKFLOW_OUTPUT     } from '../../subworkflows/stenglein-lab/process_workflow_output'
 include { GENERATE_CONSENSUS_SEQUENCE } from '../../subworkflows/stenglein-lab/generate_consensus_sequence'
@@ -13,6 +14,7 @@ include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_COVERAGE     } from '../../modules/
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_STATS        } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_DEPTH        } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_INSERT_SIZES } from '../../modules/stenglein-lab/save_output_file'
+include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES   } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_STRAND_BIAS  } from '../../modules/stenglein-lab/save_output_file'
 
 workflow REMAPPING_WORKFLOW {
@@ -39,14 +41,15 @@ workflow REMAPPING_WORKFLOW {
   // split up bams by mapped-to refseq if necessary
   ch_split_bam       = Channel.empty()
   ch_split_bam_fasta = Channel.empty()
-  if (params.tabulate_insert_sizes || params.generate_consensus_sequences){
+  if (params.tabulate_insert_sizes || params.generate_consensus_sequences || params.quantify_mismatches){
 
     // split up bam files into per-ref-seq bam files
     SPLIT_BAM_BY_REFSEQ(BOWTIE2_BUILD_ALIGN.out.bam_fasta)
 
     // assign output channels
-    ch_split_bam       = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam
-    ch_split_bam_fasta = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta
+    ch_split_bam           = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam
+    ch_split_bam_fasta     = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta
+    ch_split_bam_fasta_fai = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta_fai
   }
 
   // optionally extract insert sizes from mapped reads
@@ -61,6 +64,18 @@ workflow REMAPPING_WORKFLOW {
     EXTRACT_INSERT_SIZES(ch_split_bam)
 
     ch_insert_sizes = ch_insert_sizes.mix(EXTRACT_INSERT_SIZES.out.insert_sizes)
+  }
+
+  // optionally quantify mismatches to reference sequences in mapped reads 
+  ch_misincorporation = Channel.empty() 
+  if (params.quantify_mismatches) {
+
+    // extract mismatched bases from bam 
+    // use per-ref-seq bam files
+
+    QUANTIFY_MISMATCHES(ch_split_bam_fasta_fai)
+
+    ch_misincorporation = ch_misincorporation.mix(QUANTIFY_MISMATCHES.out.misincorporation)
   }
 
   // optionally generate new consensus sequences
@@ -95,31 +110,35 @@ workflow REMAPPING_WORKFLOW {
   SAVE_COLLECTED_STATS       (MAPPING_STATS.out.prepended_stats.collectFile(name: "collected_stats.tsv"){it[1]})
   SAVE_COLLECTED_DEPTH       (MAPPING_STATS.out.prepended_depth.collectFile(name: "collected_per_base_depth.tsv"){it[1]})
   SAVE_COLLECTED_INSERT_SIZES(ch_insert_sizes.collectFile(name: "collected_insert_sizes.txt"){it[1]})
+  SAVE_COLLECTED_MISMATCHES  (ch_misincorporation.collectFile(name: "collected_mismatches.txt"){it[1]})
   SAVE_COLLECTED_STRAND_BIAS (ch_strand_bias.collectFile(name: "collected_strand_bias.txt"){it[1]})
 
   ch_coverage     = SAVE_COLLECTED_COVERAGE.out.file
   ch_stats        = SAVE_COLLECTED_STATS.out.file
   ch_depth        = SAVE_COLLECTED_DEPTH.out.file
   ch_insert_sizes = SAVE_COLLECTED_INSERT_SIZES.out.file
+  ch_mismatches   = SAVE_COLLECTED_MISMATCHES.out.file
   ch_strand_bias  = SAVE_COLLECTED_STRAND_BIAS.out.file
 
   // optional workflow to further process/analyze the main output files
   if (params.process_workflow_output) {
-    PROCESS_WORKFLOW_OUTPUT(ch_coverage, ch_stats, ch_depth, ch_insert_sizes, ch_strand_bias)
+    PROCESS_WORKFLOW_OUTPUT(ch_coverage, ch_stats, ch_depth, ch_insert_sizes, ch_mismatches, ch_strand_bias)
   }
 
  emit:
 
-  bam            = BOWTIE2_BUILD_ALIGN.out.bam
-  bowtie2_log    = BOWTIE2_BUILD_ALIGN.out.log
-  coverage       = ch_coverage
-  coverage_plots = PROCESS_WORKFLOW_OUTPUT.out.coverage_plots
-  stats          = ch_stats
-  depth          = ch_depth
-  insert_sizes   = ch_insert_sizes
-  strand_bias    = ch_strand_bias
-  consensus      = ch_consensus_seqs
-  samples        = mapping_ch
+  bam              = BOWTIE2_BUILD_ALIGN.out.bam
+  bowtie2_log      = BOWTIE2_BUILD_ALIGN.out.log
+  coverage         = ch_coverage
+  coverage_plots   = PROCESS_WORKFLOW_OUTPUT.out.coverage_plots
+  mismatch_plots   = PROCESS_WORKFLOW_OUTPUT.out.mismatch_plots 
+  stats            = ch_stats
+  depth            = ch_depth
+  insert_sizes     = ch_insert_sizes
+  mismatches       = ch_mismatches 
+  strand_bias      = ch_strand_bias
+  consensus        = ch_consensus_seqs
+  samples          = mapping_ch
 
 }
 

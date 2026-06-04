@@ -13,7 +13,9 @@ workflow {
      consensus      = REMAPPING_WORKFLOW.out.consensus
      coverage       = REMAPPING_WORKFLOW.out.coverage
      coverage_plots = REMAPPING_WORKFLOW.out.coverage_plots
+     mismatch_plots = REMAPPING_WORKFLOW.out.mismatch_plots 
      depth          = REMAPPING_WORKFLOW.out.depth
+     mismatches     = REMAPPING_WORKFLOW.out.mismatches
      insert_sizes   = REMAPPING_WORKFLOW.out.insert_sizes
      samples        = REMAPPING_WORKFLOW.out.samples
      stats          = REMAPPING_WORKFLOW.out.stats
@@ -43,12 +45,20 @@ output {
         path 'coverage_plots'
         mode 'link'
     }
+    mismatch_plots {
+        path 'mismatch_plots' 
+        mode 'link'
+    }
     depth {
         path 'mapping/depth'
         mode 'link'
     }
     insert_sizes {
         path 'mapping/insert_sizes'
+        mode 'link'
+    }
+    mismatches {
+        path 'mapping/mismatches'
         mode 'link'
     }
     samples {

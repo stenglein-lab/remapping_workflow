@@ -41,8 +41,9 @@ workflow SPLIT_BAM_BY_REFSEQ {
 
  emit:
 
-  per_refseq_bam       = ch_enough_mapped_reads
-  per_refseq_bam_fasta = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta
+  per_refseq_bam           = ch_enough_mapped_reads
+  per_refseq_bam_fasta     = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta
+  per_refseq_bam_fasta_fai = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta_fai
 
 }
 
@@ -61,11 +62,15 @@ process OUTPUT_REFSEQ_FASTA {
 
    output:
    tuple val(meta), path(bam), val(refseq), path ("*.fasta"),  emit: per_refseq_bam_fasta, optional: true
+   tuple val(meta), path(bam), val(refseq), path ("*.fasta"), path ("*.fai"), emit: per_refseq_bam_fasta_fai, optional: true
 
    script:
    """
    # output a fasta file with this refseq
    printf ">%s\n%s\n" ${refseq.id}  ${refseq.seqString} > ${meta.id}.${refseq.id}.fasta
+
+   # create a fai index of fasta file in case needed downstream
+   samtools faidx ${meta.id}.${refseq.id}.fasta
    """
 }
 
