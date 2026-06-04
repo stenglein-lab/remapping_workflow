@@ -1,10 +1,14 @@
 /*
- * This process uses bowtie2 to map reads to a set of reference sequences
- * 
+ * This process uses bowtie2 to build an index from the provided refseq fasta
+ * and then maps reads to that index.
+ *
+ * There are separated build and align processes below
+ *
  * It is based on nf-core bowtie2 module code:
  * https://github.com/nf-core/modules/tree/master/modules/nf-core/bowtie2/align
  * https://github.com/nf-core/modules/tree/master/modules/nf-core/bowtie2/build
- * */
+ * 
+ */
 process BOWTIE2_BUILD_ALIGN {
     tag "$meta.id"
     label 'process_high'
@@ -129,6 +133,7 @@ process BOWTIE2_ALIGN {
     input:
     tuple val(meta), path(reads), path(fasta), path(index_dir), val(index_base)
     val   save_unaligned
+    val   bowtie2_options  // any additional options to bowtie2, e.g. --local or --end_to_end
 
     output:
     tuple val(meta), path("*.bam"), path(fasta)   , emit: bam_fasta     
@@ -163,7 +168,7 @@ process BOWTIE2_ALIGN {
         $reads_args \\
         --threads $task.cpus \\
         $unaligned \\
-        $args \\
+        $bowtie2_options \\
         2> >(tee ${prefix}.bowtie2.log >&2) \\
     | samtools sort \\
         $args2 \\

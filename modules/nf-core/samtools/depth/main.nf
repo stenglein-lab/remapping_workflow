@@ -27,6 +27,7 @@ process SAMTOOLS_DEPTH {
     samtools \\
         depth \\
         --threads ${task.cpus-1} \\
+        -a \\
         $args \\
         -o ${prefix}.depth.txt \\
         $bam

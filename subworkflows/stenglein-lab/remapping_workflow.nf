@@ -52,7 +52,8 @@ workflow REMAPPING_WORKFLOW {
 
   // run bowtie2 and align
   def save_unaligned = false
-  BOWTIE2_ALIGN (full_mapping_ch, save_unaligned)
+  def bowtie2_options = params.bowtie2_options
+  BOWTIE2_ALIGN (full_mapping_ch, save_unaligned, bowtie2_options)
 
   // split up bams by mapped-to refseq if necessary
   ch_split_bam       = Channel.empty()
