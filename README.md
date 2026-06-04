@@ -111,10 +111,10 @@ The location of the fastq files is specified by the required `fastq_dir` paramet
 A mapping samplesheet must be input to the pipeline.  This is a 2-column plain-text tab-delimited file with columns:
 
 1. The first row should contain column names: sampleID referenceFasta separated by a tab.
-2. The first column should contain sample IDs, i.e. sample IDs input to the Illumina samplesheet.  These will match the base name of the fastq files.
+2. The first column should contain sample IDs, i.e. sample IDs input to the Illumina samplesheet.  These will match the base name of the fastq files.  Sample IDs can also correspond to regular expressions containing * (match any number of any character) or ? (match 1 of any character).  For instance, a sample ID of `infected_*` would match any input fastq beginning with `infected_`. 
 3. The second column should contain the path to a fasta format file containing reference sequences to be mapped to for each dataset.  Not all datasets in fastq_dir need to have a row in this mapping samplesheet.  
 
-An example of a working mapping samplesheet [can be found here](./mapping_samplesheet.txt)
+An example of a working mapping samplesheet [can be found here](./mapping_samplesheet.txt).  An example with regular expressions can be found [here](./test/mapping_samplesheet.txt)
 
 ### Reference sequence files
 

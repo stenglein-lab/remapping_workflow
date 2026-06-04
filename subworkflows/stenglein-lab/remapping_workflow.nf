@@ -18,21 +18,45 @@ include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_INSERT_SIZES } from '../../modules/
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES   } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_STRAND_BIAS  } from '../../modules/stenglein-lab/save_output_file'
 
+
 workflow REMAPPING_WORKFLOW {
 
  main:
 
+  // marshal fastq 
   MARSHAL_FASTQ(params.fastq_dir, params.fastq_pattern)
 
+  // parse sample sheet (ids -> refseq_fastas)
   PARSE_MAPPING_SAMPLESHEET(params.mapping_samplesheet)
 
-  // pull out just sample ID (ignoring single-end vs not) 
-  // so we can join just based on sample ID 
-  reads_ch       = MARSHAL_FASTQ.out.reads.map{meta, reads -> [meta.id, meta, reads]}
-  samplesheet_ch = PARSE_MAPPING_SAMPLESHEET.out.sample_sheet.map{meta, fasta -> [meta.id, fasta]}
+  // wait for samplesheet parsing to finish and collect 
+  samplesheet_list_ch = PARSE_MAPPING_SAMPLESHEET.out.sample_sheet
+    .map { meta, fasta -> [meta.id, fasta] }
+    .toList()                                    // emits a single list of [pat, fasta] pairs
+    .map { it -> [it] }                          // wrap so combine sees it as one argument
 
-  // drop just sample ID, bring back in original meta
-  mapping_ch = reads_ch.join(samplesheet_ch).map{id, meta, reads, fasta -> [meta, reads, fasta] }
+  // merge fastq with refseq fasta, accounting for possible regular expressions in mapping sample sheet IDs
+  mapping_ch = MARSHAL_FASTQ.out.reads
+    .combine(samplesheet_list_ch)
+    .map { meta, reads, pattern_rows ->
+
+        def matches = pattern_rows.findAll { pat, fasta ->
+            meta.id ==~ GlobUtils.globToRegex(pat)
+        }
+
+        if (matches.size() == 0) {
+            log.warn "No mapping samplesheet entry matches sample id: ${meta.id} fastq: $reads — will not map."
+            return null // nulls will be filtered out below
+        }
+
+        if (matches.size() > 1) {
+            def matchedPats = matches.collect { pat, fasta -> "'${pat}'" }.join(', ')
+            exit 1, "Sample '${meta.id}' matches more than one mapping samplesheet pattern. matched patterns: ${matchedPats}."
+        }
+
+        return [meta, reads, matches[0][1]]
+    }
+    .filter { it != null }
 
   // create one index per refseq fasta to avoid duplicate index building
   // keep track of the original fasta path (toString()) because path to fasta
