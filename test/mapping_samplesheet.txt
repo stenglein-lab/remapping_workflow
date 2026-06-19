@@ -2,3 +2,4 @@ sampleID	referenceFasta
 positive_control	https://raw.githubusercontent.com/stenglein-lab/remapping_workflow/refs/heads/main/virus_refseq/FoCo17_viruses.fasta
 water_negative_control	https://raw.githubusercontent.com/stenglein-lab/remapping_workflow/refs/heads/main/virus_refseq/FoCo17_viruses.fasta
 test_*	https://raw.githubusercontent.com/stenglein-lab/remapping_workflow/refs/heads/main/virus_refseq/FoCo17_viruses.fasta
+*SRR*	https://raw.githubusercontent.com/stenglein-lab/remapping_workflow/refs/heads/main/virus_refseq/FoCo17_viruses.fasta

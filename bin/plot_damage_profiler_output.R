@@ -43,9 +43,6 @@ if (debug) {
   mismatch_input        = "../results/mapping/mismatches/cm"
 }
 
-# TODO: for now...
-quit(save = "no", status = 0)
-
 mismatches <- read.delim(mismatch_input, header=F, sep="\t")
 
 # damage profiler columns in misincorporation.txt output file: 

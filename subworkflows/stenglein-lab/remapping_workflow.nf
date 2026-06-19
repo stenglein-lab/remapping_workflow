@@ -6,6 +6,7 @@ include { SPLIT_BAM_BY_REFSEQ         } from '../../subworkflows/stenglein-lab/s
 include { MAPPING_STATS               } from '../../subworkflows/stenglein-lab/mapping_stats'
 include { EXTRACT_INSERT_SIZES        } from '../../modules/stenglein-lab/extract_insert_sizes'
 include { QUANTIFY_MISMATCHES         } from '../../modules/stenglein-lab/quantify_mismatches'
+include { DAMAGE_PROFILER             } from '../../modules/stenglein-lab/damage_profiler'
 include { QUANTIFY_STRAND_BIAS        } from '../../subworkflows/stenglein-lab/quantify_strand_bias'
 include { PROCESS_WORKFLOW_OUTPUT     } from '../../subworkflows/stenglein-lab/process_workflow_output'
 include { GENERATE_CONSENSUS_SEQUENCE } from '../../subworkflows/stenglein-lab/generate_consensus_sequence'
@@ -88,9 +89,10 @@ workflow REMAPPING_WORKFLOW {
     SPLIT_BAM_BY_REFSEQ(BOWTIE2_ALIGN.out.bam_fasta)
 
     // assign output channels
-    ch_split_bam           = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam
-    ch_split_bam_fasta     = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta
-    ch_split_bam_fasta_fai = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta_fai
+    ch_split_bam               = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam
+    ch_split_bam_fasta         = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta
+    ch_split_bam_fasta_fai     = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta_fai
+    ch_split_bam_fasta_fai_bai = SPLIT_BAM_BY_REFSEQ.out.per_refseq_bam_fasta_fai_bai
   }
 
   // optionally extract insert sizes from mapped reads
@@ -108,15 +110,19 @@ workflow REMAPPING_WORKFLOW {
   }
 
   // optionally quantify mismatches to reference sequences in mapped reads 
-  ch_misincorporation = Channel.empty() 
+  ch_mismatches = Channel.empty() 
   if (params.quantify_mismatches) {
 
     // extract mismatched bases from bam 
     // use per-ref-seq bam files
+    // params related to support needed for consensus calling
 
-    QUANTIFY_MISMATCHES(ch_split_bam_fasta_fai)
+    QUANTIFY_MISMATCHES(ch_split_bam_fasta_fai_bai, 
+                        params.min_mismatch_depth, 
+                        params.min_mismatch_base_quality, 
+                        params.min_mismatch_mapping_quality)
 
-    ch_misincorporation = ch_misincorporation.mix(QUANTIFY_MISMATCHES.out.misincorporation)
+    ch_mismatches = ch_mismatches.mix(QUANTIFY_MISMATCHES.out.txt)
   }
 
   // optionally generate new consensus sequences
@@ -124,9 +130,9 @@ workflow REMAPPING_WORKFLOW {
   if (params.generate_consensus_sequences) {
 
      // params related to support needed for consensus calling
-     ch_min_qual  = Channel.value(params.illumina_min_qual)
-     ch_min_depth = Channel.value(params.illumina_min_depth)
-     ch_min_freq  = Channel.value(params.illumina_min_freq)
+     ch_min_qual  = Channel.value(params.consensus_min_qual)
+     ch_min_depth = Channel.value(params.consensus_min_depth)
+     ch_min_freq  = Channel.value(params.consensus_min_freq)
 
     // create new consensus sequences 
     GENERATE_CONSENSUS_SEQUENCE(ch_split_bam_fasta, ch_min_depth, ch_min_qual, ch_min_freq)
@@ -151,7 +157,7 @@ workflow REMAPPING_WORKFLOW {
   SAVE_COLLECTED_STATS       (MAPPING_STATS.out.prepended_stats.collectFile(name: "collected_stats.tsv"){it[1]})
   SAVE_COLLECTED_DEPTH       (MAPPING_STATS.out.prepended_depth.collectFile(name: "collected_per_base_depth.tsv"){it[1]})
   SAVE_COLLECTED_INSERT_SIZES(ch_insert_sizes.collectFile(name: "collected_insert_sizes.txt"){it[1]})
-  SAVE_COLLECTED_MISMATCHES  (ch_misincorporation.collectFile(name: "collected_mismatches.txt"){it[1]})
+  SAVE_COLLECTED_MISMATCHES  (ch_mismatches.collectFile(name: "collected_mismatches.txt"){it[1]})
   SAVE_COLLECTED_STRAND_BIAS (ch_strand_bias.collectFile(name: "collected_strand_bias.txt"){it[1]})
 
   ch_coverage     = SAVE_COLLECTED_COVERAGE.out.file

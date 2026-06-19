@@ -30,7 +30,7 @@ workflow SPLIT_BAM_BY_REFSEQ {
   // count number of reads mapped to each split bam
   COUNT_MAPPING_READS(SPLIT_BAM_BY_ONE_REFSEQ.out.per_refseq_bam)
 
-  // only proceed when spli tbam contain enough mapped reads, 
+  // only proceed when split bam contain enough mapped reads, 
   // with cutoff defined by params.mapped_read_cutoff:
   ch_enough_mapped_reads = COUNT_MAPPING_READS.out.per_refseq_bam
    .filter{Integer.parseInt(it[3]) > params.mapped_read_cutoff}
@@ -41,9 +41,10 @@ workflow SPLIT_BAM_BY_REFSEQ {
 
  emit:
 
-  per_refseq_bam           = ch_enough_mapped_reads
-  per_refseq_bam_fasta     = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta
-  per_refseq_bam_fasta_fai = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta_fai
+  per_refseq_bam               = ch_enough_mapped_reads
+  per_refseq_bam_fasta         = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta
+  per_refseq_bam_fasta_fai     = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta_fai
+  per_refseq_bam_fasta_fai_bai = OUTPUT_REFSEQ_FASTA.out.per_refseq_bam_fasta_fai_bai
 
 }
 
@@ -61,8 +62,10 @@ process OUTPUT_REFSEQ_FASTA {
    tuple val(meta), path(bam), val(refseq)                
 
    output:
-   tuple val(meta), path(bam), val(refseq), path ("*.fasta"),  emit: per_refseq_bam_fasta, optional: true
-   tuple val(meta), path(bam), val(refseq), path ("*.fasta"), path ("*.fai"), emit: per_refseq_bam_fasta_fai, optional: true
+   // TODO: seems like switching from tuples to records (new in nextflow 26.04) would help here:
+   tuple val(meta), path(bam), val(refseq), path ("*.fasta"),                                emit: per_refseq_bam_fasta, optional: true
+   tuple val(meta), path(bam), val(refseq), path ("*.fasta"), path ("*.fai"),                emit: per_refseq_bam_fasta_fai, optional: true
+   tuple val(meta), path(bam), val(refseq), path ("*.fasta"), path ("*.fai"), path("*.bai"), emit: per_refseq_bam_fasta_fai_bai, optional: true
 
    script:
    """
@@ -71,6 +74,9 @@ process OUTPUT_REFSEQ_FASTA {
 
    # create a fai index of fasta file in case needed downstream
    samtools faidx ${meta.id}.${refseq.id}.fasta
+
+   # index bam file in case needed downstream
+   samtools index ${bam}
    """
 }
 
@@ -108,8 +114,8 @@ process SPLIT_BAM_BY_ONE_REFSEQ {
    tuple val(meta), path(bam), val(refseq)
 
    output:
-   tuple val(meta), path("*.bam", includeInputs: false), val(refseq),  emit: per_refseq_bam,       optional: true
-   path  "versions.yml",                                               emit: versions
+   tuple val(meta), path("*.bam", includeInputs: false), val(refseq), emit: per_refseq_bam, optional: true
+   path  "versions.yml",                                              emit: versions
 
    when:
    task.ext.when == null || task.ext.when

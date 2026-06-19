@@ -34,7 +34,7 @@ workflow PARSE_MAPPING_SAMPLESHEET {
       // extracts read files from TSV and distribute into channels
       Channel
         .fromPath(input, checkIfExists: true)
-        .splitCsv(header:true, sep:'\t')
+        .splitCsv(header: true, strip: true, sep:'\t')
         .map { parse_samplesheet(it) }
         .set { ch_sample_sheet }
 
