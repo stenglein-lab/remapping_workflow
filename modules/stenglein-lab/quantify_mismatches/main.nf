@@ -13,7 +13,10 @@ process QUANTIFY_MISMATCHES {
   val(min_mapping_quality)
 
   output:
-  tuple val(meta), path ("*.mismatches.txt")  , emit: txt
+  tuple val(meta), path ("*.mismatches.txt")             , emit: per_refseq_per_position_mismatches
+  tuple val(meta), path ("*.per_refseq_mismatches.txt")  , emit: per_refseq_mismatches
+  tuple val(meta), path ("*.by_read_position_mismatches.txt") , emit: by_position_mismatches
+  tuple val(meta), path ("*.total_mismatches.txt")       , emit: total_mismatches
   // path "versions.yml"  , emit: versions
 
   when:
@@ -24,15 +27,18 @@ process QUANTIFY_MISMATCHES {
   def args             = task.ext.args ?: ''
 
   """
-  # pipe to awk to prepend sample ID
   tabulate_mismatches_from_bam.py \
      $args \
      --ref $refseq_fasta \
      --bam $bam \
-     --min-depth $min_depth \
-     --min-base-quality $min_base_quality \
-     --min-mapping-quality $min_mapping_quality \
-  | awk '{print "${meta.id}" "\t" \$0}' > ${meta.id}.${refseq.id}.mismatches.txt
+     --prefix ${meta.id} \
+     --mismatch_types_per_ref_out ${meta.id}.${refseq.id}.per_refseq_mismatches.txt \
+     --mismatch_types_by_pos ${meta.id}.${refseq.id}.by_read_position_mismatches.txt \
+     --mismatch_types_total_out ${meta.id}.${refseq.id}.total_mismatches.txt \
+     --min_depth $min_depth \
+     --min_base_quality $min_base_quality \
+     --min_mapping_quality $min_mapping_quality \
+   > ${meta.id}.${refseq.id}.mismatches.txt
   """
 
 }

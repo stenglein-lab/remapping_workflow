@@ -16,6 +16,9 @@ workflow {
      mismatch_plots = REMAPPING_WORKFLOW.out.mismatch_plots 
      depth          = REMAPPING_WORKFLOW.out.depth
      mismatches     = REMAPPING_WORKFLOW.out.mismatches
+     mismatches_pr  = REMAPPING_WORKFLOW.out.mismatches_per_ref
+     mismatches_bp  = REMAPPING_WORKFLOW.out.mismatches_by_pos 
+     mismatches_tot = REMAPPING_WORKFLOW.out.mismatches_total
      insert_sizes   = REMAPPING_WORKFLOW.out.insert_sizes
      samples        = REMAPPING_WORKFLOW.out.samples
      stats          = REMAPPING_WORKFLOW.out.stats
@@ -58,6 +61,18 @@ output {
         mode 'link'
     }
     mismatches {
+        path 'mapping/mismatches'
+        mode 'link'
+    }
+    mismatches_pr {
+        path 'mapping/mismatches'
+        mode 'link'
+    }
+    mismatches_bp {
+        path 'mapping/mismatches'
+        mode 'link'
+    }
+    mismatches_tot {
         path 'mapping/mismatches'
         mode 'link'
     }

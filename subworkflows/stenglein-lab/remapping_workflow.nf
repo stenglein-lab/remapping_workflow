@@ -17,6 +17,9 @@ include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_STATS        } from '../../modules/
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_DEPTH        } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_INSERT_SIZES } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES   } from '../../modules/stenglein-lab/save_output_file'
+include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES_PR} from '../../modules/stenglein-lab/save_output_file'
+include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES_BP} from '../../modules/stenglein-lab/save_output_file'
+include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES_T } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_STRAND_BIAS  } from '../../modules/stenglein-lab/save_output_file'
 
 
@@ -110,7 +113,10 @@ workflow REMAPPING_WORKFLOW {
   }
 
   // optionally quantify mismatches to reference sequences in mapped reads 
-  ch_mismatches = Channel.empty() 
+  ch_mismatches         = Channel.empty() 
+  ch_mismatches_per_ref = Channel.empty() 
+  ch_mismatches_by_pos  = Channel.empty() 
+  ch_mismatches_total   = Channel.empty() 
   if (params.quantify_mismatches) {
 
     // extract mismatched bases from bam 
@@ -122,7 +128,10 @@ workflow REMAPPING_WORKFLOW {
                         params.min_mismatch_base_quality, 
                         params.min_mismatch_mapping_quality)
 
-    ch_mismatches = ch_mismatches.mix(QUANTIFY_MISMATCHES.out.txt)
+    ch_mismatches         = ch_mismatches        .mix(QUANTIFY_MISMATCHES.out.per_refseq_per_position_mismatches)
+    ch_mismatches_per_ref = ch_mismatches_per_ref.mix(QUANTIFY_MISMATCHES.out.per_refseq_mismatches)
+    ch_mismatches_by_pos  = ch_mismatches_by_pos .mix(QUANTIFY_MISMATCHES.out.by_position_mismatches)
+    ch_mismatches_total   = ch_mismatches_total  .mix(QUANTIFY_MISMATCHES.out.total_mismatches)
   }
 
   // optionally generate new consensus sequences
@@ -157,7 +166,10 @@ workflow REMAPPING_WORKFLOW {
   SAVE_COLLECTED_STATS       (MAPPING_STATS.out.prepended_stats.collectFile(name: "collected_stats.tsv"){it[1]})
   SAVE_COLLECTED_DEPTH       (MAPPING_STATS.out.prepended_depth.collectFile(name: "collected_per_base_depth.tsv"){it[1]})
   SAVE_COLLECTED_INSERT_SIZES(ch_insert_sizes.collectFile(name: "collected_insert_sizes.txt"){it[1]})
-  SAVE_COLLECTED_MISMATCHES  (ch_mismatches.collectFile(name: "collected_mismatches.txt"){it[1]})
+  SAVE_COLLECTED_MISMATCHES    (ch_mismatches.collectFile(name: "collected_mismatches.txt"){it[1]})
+  SAVE_COLLECTED_MISMATCHES_PR (ch_mismatches_per_ref.collectFile(name: "collected_per_refseq_mismatches.txt"){it[1]})
+  SAVE_COLLECTED_MISMATCHES_BP (ch_mismatches_by_pos.collectFile(name: "collected_by_read_position_mismatches.txt"){it[1]})
+  SAVE_COLLECTED_MISMATCHES_T  (ch_mismatches_total.collectFile(name: "collected_total_mismatches.txt"){it[1]})
   SAVE_COLLECTED_STRAND_BIAS (ch_strand_bias.collectFile(name: "collected_strand_bias.txt"){it[1]})
 
   ch_coverage     = SAVE_COLLECTED_COVERAGE.out.file
@@ -165,6 +177,9 @@ workflow REMAPPING_WORKFLOW {
   ch_depth        = SAVE_COLLECTED_DEPTH.out.file
   ch_insert_sizes = SAVE_COLLECTED_INSERT_SIZES.out.file
   ch_mismatches   = SAVE_COLLECTED_MISMATCHES.out.file
+  ch_mismatches_per_ref = SAVE_COLLECTED_MISMATCHES_PR.out.file
+  ch_mismatches_by_pos  = SAVE_COLLECTED_MISMATCHES_BP.out.file
+  ch_mismatches_total   = SAVE_COLLECTED_MISMATCHES_T.out.file
   ch_strand_bias  = SAVE_COLLECTED_STRAND_BIAS.out.file
 
   // optional workflow to further process/analyze the main output files
@@ -183,6 +198,9 @@ workflow REMAPPING_WORKFLOW {
   depth            = ch_depth
   insert_sizes     = ch_insert_sizes
   mismatches       = ch_mismatches 
+  mismatches_per_ref = ch_mismatches_per_ref
+  mismatches_by_pos  = ch_mismatches_by_pos  
+  mismatches_total   = ch_mismatches_total 
   strand_bias      = ch_strand_bias
   consensus        = ch_consensus_seqs
   samples          = mapping_ch
