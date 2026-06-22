@@ -66,7 +66,7 @@ workflow REMAPPING_WORKFLOW {
   // keep track of the original fasta path (toString()) because path to fasta
   // can change once brought into work directories (e.g. in BOWTIE2_BUILD work dir)
   refseq_fasta_ch = mapping_ch
-    .map { meta, reads, fasta -> [fasta.toString(), fasta] }
+    .map { meta, reads, fasta -> [fasta.toString(), file(fasta)] }
     .unique { it[0] }          
 
   // build indexes, one per fasta
@@ -183,10 +183,10 @@ workflow REMAPPING_WORKFLOW {
   ch_strand_bias  = SAVE_COLLECTED_STRAND_BIAS.out.file
 
   // optional workflow to further process/analyze the main output files
-  ch_processed_output = Channel.empty()
+  ch_coverage_plots = Channel.empty()
   if (params.process_workflow_output) {
     PROCESS_WORKFLOW_OUTPUT(ch_coverage, ch_stats, ch_depth, ch_insert_sizes, ch_mismatches, ch_strand_bias)
-    ch_processed_output = PROCESS_WORKFLOW_OUTPUT.out
+    ch_coverage_plots = PROCESS_WORKFLOW_OUTPUT.out.coverage_plots
   }
 
  emit:
@@ -194,8 +194,7 @@ workflow REMAPPING_WORKFLOW {
   bam              = BOWTIE2_ALIGN.out.bam
   bowtie2_log      = BOWTIE2_ALIGN.out.log
   coverage         = ch_coverage
-  coverage_plots   = ch_processed_output 
-  mismatch_plots   = ch_processed_output 
+  coverage_plots   = ch_coverage_plots 
   stats            = ch_stats
   depth            = ch_depth
   insert_sizes     = ch_insert_sizes

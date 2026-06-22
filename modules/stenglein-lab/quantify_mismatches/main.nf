@@ -13,6 +13,7 @@ process QUANTIFY_MISMATCHES {
   val(min_mapping_quality)
 
   output:
+  tuple val(meta), path ("*mismatches.txt")             , emit: mismatches
   tuple val(meta), path ("*.mismatches.txt")             , emit: per_refseq_per_position_mismatches
   tuple val(meta), path ("*.per_refseq_mismatches.txt")  , emit: per_refseq_mismatches
   tuple val(meta), path ("*.by_read_position_mismatches.txt") , emit: by_position_mismatches
