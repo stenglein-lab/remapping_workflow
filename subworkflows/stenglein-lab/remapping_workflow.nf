@@ -183,8 +183,10 @@ workflow REMAPPING_WORKFLOW {
   ch_strand_bias  = SAVE_COLLECTED_STRAND_BIAS.out.file
 
   // optional workflow to further process/analyze the main output files
+  ch_processed_output = Channel.empty()
   if (params.process_workflow_output) {
     PROCESS_WORKFLOW_OUTPUT(ch_coverage, ch_stats, ch_depth, ch_insert_sizes, ch_mismatches, ch_strand_bias)
+    ch_processed_output = PROCESS_WORKFLOW_OUTPUT.out
   }
 
  emit:
@@ -192,8 +194,8 @@ workflow REMAPPING_WORKFLOW {
   bam              = BOWTIE2_ALIGN.out.bam
   bowtie2_log      = BOWTIE2_ALIGN.out.log
   coverage         = ch_coverage
-  coverage_plots   = PROCESS_WORKFLOW_OUTPUT.out.coverage_plots
-  mismatch_plots   = PROCESS_WORKFLOW_OUTPUT.out.mismatch_plots 
+  coverage_plots   = ch_processed_output 
+  mismatch_plots   = ch_processed_output 
   stats            = ch_stats
   depth            = ch_depth
   insert_sizes     = ch_insert_sizes
