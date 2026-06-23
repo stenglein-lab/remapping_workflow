@@ -14,6 +14,7 @@ workflow {
      coverage       = REMAPPING_WORKFLOW.out.coverage
      coverage_plots = REMAPPING_WORKFLOW.out.coverage_plots
      depth          = REMAPPING_WORKFLOW.out.depth
+     strand_sp_cov  = REMAPPING_WORKFLOW.out.strand_specific_coverage
      mismatches     = REMAPPING_WORKFLOW.out.mismatches
      mismatches_pr  = REMAPPING_WORKFLOW.out.mismatches_per_ref
      mismatches_bp  = REMAPPING_WORKFLOW.out.mismatches_by_pos 
@@ -49,6 +50,10 @@ output {
     }
     depth {
         path 'mapping/depth'
+        mode 'link'
+    }
+    strand_sp_cov {
+        path 'mapping/strand_specific_coverage'
         mode 'link'
     }
     insert_sizes {

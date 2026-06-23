@@ -4,6 +4,7 @@ include { BOWTIE2_BUILD               } from '../../subworkflows/stenglein-lab/b
 include { BOWTIE2_ALIGN               } from '../../subworkflows/stenglein-lab/bowtie2_build_align'
 include { SPLIT_BAM_BY_REFSEQ         } from '../../subworkflows/stenglein-lab/split_bam_by_refseq'
 include { MAPPING_STATS               } from '../../subworkflows/stenglein-lab/mapping_stats'
+include { STRAND_SPECIFIC_COVERAGE    } from '../../subworkflows/stenglein-lab/strand_specific_coverage'
 include { EXTRACT_INSERT_SIZES        } from '../../modules/stenglein-lab/extract_insert_sizes'
 include { QUANTIFY_MISMATCHES         } from '../../modules/stenglein-lab/quantify_mismatches'
 include { DAMAGE_PROFILER             } from '../../modules/stenglein-lab/damage_profiler'
@@ -15,6 +16,7 @@ include { GENERATE_CONSENSUS_SEQUENCE } from '../../subworkflows/stenglein-lab/g
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_COVERAGE     } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_STATS        } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_DEPTH        } from '../../modules/stenglein-lab/save_output_file'
+include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_S_S_COVERAGE } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_INSERT_SIZES } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES   } from '../../modules/stenglein-lab/save_output_file'
 include { SAVE_OUTPUT_FILE as SAVE_COLLECTED_MISMATCHES_PR} from '../../modules/stenglein-lab/save_output_file'
@@ -158,13 +160,21 @@ workflow REMAPPING_WORKFLOW {
   }
 
   // tabulate mapping stats: samtools stats, coverage, and optionally per-base depth
-  def per_base_coverage = !params.skip_per_base_coverage
+  def per_base_coverage = params.per_base_coverage
   MAPPING_STATS(BOWTIE2_ALIGN.out.bam_fasta, per_base_coverage)
+
+  // optionally tabulate strand-specific coverage depth, using bamtocov  
+  ch_strand_specific_coverage = Channel.empty()
+  if (params.strand_specific_coverage) {
+     STRAND_SPECIFIC_COVERAGE(BOWTIE2_ALIGN.out.bam)
+     ch_strand_specific_coverage = ch_strand_specific_coverage.mix(STRAND_SPECIFIC_COVERAGE.out.strand_specific_coverage)
+  }
 
   // save consolidated output files
   SAVE_COLLECTED_COVERAGE    (MAPPING_STATS.out.prepended_coverage.collectFile(name: "collected_per_refseq_coverage.tsv"){it[1]})
   SAVE_COLLECTED_STATS       (MAPPING_STATS.out.prepended_stats.collectFile(name: "collected_stats.tsv"){it[1]})
   SAVE_COLLECTED_DEPTH       (MAPPING_STATS.out.prepended_depth.collectFile(name: "collected_per_base_depth.tsv"){it[1]})
+  SAVE_COLLECTED_S_S_COVERAGE (ch_strand_specific_coverage.collectFile(name: "collected_strand_specific_coverage.txt"){it[1]})
   SAVE_COLLECTED_INSERT_SIZES(ch_insert_sizes.collectFile(name: "collected_insert_sizes.txt"){it[1]})
   SAVE_COLLECTED_MISMATCHES    (ch_mismatches.collectFile(name: "collected_mismatches.txt"){it[1]})
   SAVE_COLLECTED_MISMATCHES_PR (ch_mismatches_per_ref.collectFile(name: "collected_per_refseq_mismatches.txt"){it[1]})
@@ -175,6 +185,7 @@ workflow REMAPPING_WORKFLOW {
   ch_coverage     = SAVE_COLLECTED_COVERAGE.out.file
   ch_stats        = SAVE_COLLECTED_STATS.out.file
   ch_depth        = SAVE_COLLECTED_DEPTH.out.file
+  ch_strand_specific_coverage = SAVE_COLLECTED_S_S_COVERAGE.out.file
   ch_insert_sizes = SAVE_COLLECTED_INSERT_SIZES.out.file
   ch_mismatches   = SAVE_COLLECTED_MISMATCHES.out.file
   ch_mismatches_per_ref = SAVE_COLLECTED_MISMATCHES_PR.out.file
@@ -197,6 +208,7 @@ workflow REMAPPING_WORKFLOW {
   coverage_plots   = ch_coverage_plots 
   stats            = ch_stats
   depth            = ch_depth
+  strand_specific_coverage  = ch_strand_specific_coverage
   insert_sizes     = ch_insert_sizes
   mismatches       = ch_mismatches 
   mismatches_per_ref = ch_mismatches_per_ref
@@ -205,6 +217,5 @@ workflow REMAPPING_WORKFLOW {
   strand_bias      = ch_strand_bias
   consensus        = ch_consensus_seqs
   samples          = mapping_ch
-
 }
 
