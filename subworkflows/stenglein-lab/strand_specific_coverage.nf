@@ -51,8 +51,8 @@ process BED_TO_PER_BASE_COV {
   script:
   def args             = task.ext.args ?: ''
   """
-  # perl script in workflow bin dir
-  stranded_bed_to_per_base_coverage $bed > ${bed}.per_base.txt
+  # perl script in workflow bin dir; prepend with sample ID
+  stranded_bed_to_per_base_coverage ${bed} | awk '{print "${meta.id}" "\t" \$0}' > ${bed}.per_base.txt
 
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":
