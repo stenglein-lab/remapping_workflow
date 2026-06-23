@@ -166,7 +166,8 @@ workflow REMAPPING_WORKFLOW {
   // optionally tabulate strand-specific coverage depth, using bamtocov  
   ch_strand_specific_coverage = Channel.empty()
   if (params.strand_specific_coverage) {
-     STRAND_SPECIFIC_COVERAGE(BOWTIE2_ALIGN.out.bam)
+                        
+     STRAND_SPECIFIC_COVERAGE(BOWTIE2_ALIGN.out.bam, params.min_coverage_mapping_quality)
      ch_strand_specific_coverage = ch_strand_specific_coverage.mix(STRAND_SPECIFIC_COVERAGE.out.strand_specific_coverage)
   }
 
