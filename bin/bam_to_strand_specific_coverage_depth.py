@@ -74,20 +74,19 @@ def classify_strand(flag):
     # is this read mapped in the reverse orientation relative to the ref seq?
     is_reverse = bool(flag & FLAG_REVERSE)
 
-    # paired end read
-    if flag & FLAG_PAIRED:
+    # this is a paired end read
+    if bool(flag & FLAG_PAIRED):
         is_read2 = bool(flag & FLAG_READ2)
         is_read1 = bool(flag & FLAG_READ1)
         # this is a paired read that is neither read1 nor read2 (TODO: should error?)
         if not (is_read1 or is_read2):
             return None
         
-
         # handle read1 / read2 differently (oppositely)
         if is_read2:
-            return "rev" if is_reverse else "fwd"
-        else:  # read1
             return "fwd" if is_reverse else "rev"
+        else:  # read1
+            return "rev" if is_reverse else "fwd"
     else:
         # single end read
         return "rev" if is_reverse else "fwd"
