@@ -133,6 +133,13 @@ def parse_args():
              "Default 0 means all positions are reported.",
     )
     parser.add_argument(
+        "--max_depth",
+        type=int,
+        default=100000,
+        help="Maximum coverage depth allowed at a position. "
+             "Passed to the pysam pileup() function max_depth parameter.",
+    )
+    parser.add_argument(
         "--min_base_quality",
         type=int,
         default=20,
@@ -310,6 +317,7 @@ def compute_mismatch_profile(args, mismatch_types_per_ref, mismatch_types_total,
     # define dictionary with pysam args
     pileup_common_kwargs = dict(
         stepper             = args.stepper,
+        max_depth           = args.max_depth,
         min_base_quality    = args.min_base_quality,
         min_mapping_quality = args.min_mapping_quality,
         truncate            = True,   # Pysam doc: By default, the samtools pileup engine outputs all reads overlapping a region. If truncate is True and a region is given, only columns in the exact region specified are returned
