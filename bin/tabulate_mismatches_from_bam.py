@@ -135,7 +135,7 @@ def parse_args():
     parser.add_argument(
         "--max_depth",
         type=int,
-        default=100000,
+        default=20000,
         help="Maximum coverage depth allowed at a position. "
              "Passed to the pysam pileup() function max_depth parameter.",
     )

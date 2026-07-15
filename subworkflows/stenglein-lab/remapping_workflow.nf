@@ -127,6 +127,7 @@ workflow REMAPPING_WORKFLOW {
 
     QUANTIFY_MISMATCHES(ch_split_bam_fasta_fai_bai, 
                         params.min_mismatch_depth, 
+                        params.max_mismatch_depth, 
                         params.min_mismatch_base_quality, 
                         params.min_mismatch_mapping_quality)
 

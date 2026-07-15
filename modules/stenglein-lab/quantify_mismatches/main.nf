@@ -9,6 +9,7 @@ process QUANTIFY_MISMATCHES {
   input:
   tuple val(meta), path(bam), val(refseq), path (refseq_fasta), path (fai), path(bai)
   val(min_depth)
+  val(max_depth)
   val(min_base_quality)
   val(min_mapping_quality)
 
@@ -37,6 +38,7 @@ process QUANTIFY_MISMATCHES {
      --mismatch_types_by_pos ${meta.id}.${refseq.id}.by_read_position_mismatches.txt \
      --mismatch_types_total_out ${meta.id}.${refseq.id}.total_mismatches.txt \
      --min_depth $min_depth \
+     --max_depth $max_depth \
      --min_base_quality $min_base_quality \
      --min_mapping_quality $min_mapping_quality \
    > ${meta.id}.${refseq.id}.mismatches.txt
