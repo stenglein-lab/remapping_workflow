@@ -1,5 +1,5 @@
 process QUANTIFY_MISMATCHES {
-  label 'lowmem_non_threaded'
+  label 'process_medium'
 
   // singularity info for this process
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
