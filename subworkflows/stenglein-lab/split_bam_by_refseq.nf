@@ -136,7 +136,7 @@ process SPLIT_BAM_BY_ONE_REFSEQ {
 
    # the piped awk and second samtools are to only keep a single @SQ line in the bam header
    # because viral_consensus complains otherwise
-   awk '/^[^@]/ || (/^@/ && !/^@SQ/) || /^@SQ\tSN:${refseq.id}/' |
+   awk '/^[^@]/ || (/^@/ && !/^@SQ/) || /^@SQ\tSN:${refseq.id}[[:space:]]/' |
    samtools view \
        -o ${new_bam_name} 
 
