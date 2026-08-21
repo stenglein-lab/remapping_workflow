@@ -34,14 +34,12 @@ process QUANTIFY_MISMATCHES {
      --ref $refseq_fasta \
      --bam $bam \
      --prefix ${meta.id} \
-     --mismatch_types_per_ref_out ${meta.id}.${refseq.id}.per_refseq_mismatches.txt \
-     --mismatch_types_by_pos ${meta.id}.${refseq.id}.by_read_position_mismatches.txt \
-     --mismatch_types_total_out ${meta.id}.${refseq.id}.total_mismatches.txt \
-     --min_depth $min_depth \
-     --max_depth $max_depth \
-     --min_base_quality $min_base_quality \
-     --min_mapping_quality $min_mapping_quality \
-   > ${meta.id}.${refseq.id}.mismatches.txt
+     --global-out ${meta.id}.${refseq.id}.total_mismatches.txt \
+     --refseq-out ${meta.id}.${refseq.id}.per_refseq_mismatches.txt \
+     --refpos-out ${meta.id}.${refseq.id}.mismatches.txt \
+     --readpos-out ${meta.id}.${refseq.id}.by_read_position_mismatches.txt \
+     --min-baseq $min_base_quality \
+     --min-mapq $min_mapping_quality 
   """
 
 }

@@ -1,683 +1,1519 @@
 #!/usr/bin/env python3
+
 """
-tabulate_mismatches_from_bam.py
+Quantify reference -> observed base substitutions in mapped reads.
 
-Compute per-reference-position match/mismatch counts and frequencies from a
-BAM file, using pysam (a python wrapper around htslib).
+Outputs are plain-text TSV files. Four independent output files can be
+requested:
 
-For every position in every reference sequence, including positions with no coverage,
-this script reports:
-    - the reference sequence name
-    - the position
-    - the reference base at that position
-    - read depth at that position (number of aligned, non-deleted bases at that position)
-    - per-base counts (A, C, G, T, N)
+    --global-out
+        Global counts of all 16 reference -> observed combinations.
 
-Additionally, this script can optionally output mismatch type summaries
-(e.g. how many C->A substitutions were observed):
-    - --mismatch-types-per-ref-out: counts per (contig, ref_base, alt_base)
-    - --mismatch-types-total-out: counts per (ref_base, alt_base), totalled
-      across every contig/region processed
+    --refseq-out
+        Frequencies of all 16 combinations for each reference sequence.
 
-These type summaries are accumulated over every position considered,
-independent of --min-depth filtering applied to the main per-position
-report, and only classify A/C/G/T reference bases (positions with an 'N'
-reference base are excluded, since "N->X" is not a meaningful substitution
-type).
+    --refpos-out
+        Frequencies of all 16 combinations at each reference sequence
+        and reference position.
 
-Requirements:
-    - pysam
-    - A sorted and indexed bam file with accompanying .bai index
-      (created with: samtools sort and samtools index)
-    - A reference FASTA file with accompanying .fai index
-      (created with: samtools faidx ref.fa)
+    --readpos-out
+        Frequencies of all 16 combinations as a function of read
+        position, separately for R1/R2 and separately from the beginning
+        and end of the read.
 
-Why sorted + indexed is required:
-    This script needs random access into the BAM (via region-based pileup)
-    to enumerate every reference position, including those with zero
-    coverage. That requires a coordinate-sorted, indexed BAM
-    (samtools sort + samtools index).
+Read positions in readpos output are represented independently as:
 
-It is possible to restrict output to a particular refseq/region
+    position_from_start
+        1 = first sequenced base
+        2 = second sequenced base
+        ...
 
-Example usage:
-    python tabulate_mismatches_from_bam.py \
-        --bam aligned.sorted.bam \
-        --ref ref.fa \
-        --out mismatch_profile.tsv
+    position_from_end
+        1 = last sequenced base
+        2 = second-to-last sequenced base
+        ...
 
-    # Restrict to a specific region:
-    python tabulate_mismatches_from_bam.py \
-        --bam aligned.sorted.bam \
-        --ref ref.fa \
-        --region chr1:1000-2000 \
-        --out mismatch_profile.tsv
+Thus every eligible base contributes to BOTH the start-position and
+end-position distributions.
 
-    # Only report positions with at least 10x depth 
-    python tabulate_mismatches_from_bam.py \
-        --bam aligned.sorted.bam \
-        --ref ref.fa \
-        --min-depth 10 \
-        --out mismatch_profile.tsv
+Optional overlap collapsing:
 
-    # Also emit mismatch-type summaries (e.g. C->A counts) per contig and
-    # totalled overall:
-    python tabulate_mismatches_from_bam.py \
-        --bam aligned.sorted.bam \
-        --ref ref.fa \
-        --out mismatch_profile.tsv \
-        --mismatch-types-per-ref-out mismatch_types_per_ref.tsv \
-        --mismatch-types-total-out mismatch_types_total.tsv
+    --collapse-overlaps
+
+When enabled, paired reads are grouped by query name using a temporary
+name-sorted BAM. Bases covered by both R1 and R2 are treated as one
+molecular observation.
+
+For an overlapping base:
+
+    - if R1 and R2 agree, retain one observation;
+    - if they disagree and one has higher base quality, retain the
+      higher-quality observation;
+    - if they disagree and base qualities are equal, discard the base.
+
+This behavior can be changed with --overlap-disagreement.
+
+Example without overlap collapsing:
+
+    python mismatch_spectrum.py \
+        --bam sample.bam \
+        --ref reference.fa \
+        --global-out global.tsv \
+        --refseq-out refseq.tsv \
+        --refpos-out refpos.tsv \
+        --readpos-out readpos.tsv
+
+Example with overlap collapsing:
+
+    python mismatch_spectrum.py \
+        --bam sample.bam \
+        --ref reference.fa \
+        --global-out global.tsv \
+        --refseq-out refseq.tsv \
+        --refpos-out refpos.tsv \
+        --readpos-out readpos.tsv \
+        --collapse-overlaps
+
 """
 
-# standard python libs
 import argparse
+import collections
 import os
+import shutil
+import subprocess
 import sys
-from collections import Counter, defaultdict
+import tempfile
 
-# pysam python lib
 import pysam
 
 
-BASES = ("A", "C", "G", "T", "N")
+BASES = ("A", "C", "G", "T")
+
+SUBSTITUTIONS = tuple(
+    f"{ref}>{obs}"
+    for ref in BASES
+    for obs in BASES
+)
 
 
-# --------------------------------------------------------------------------- #
-# CLI argument parsing
-# --------------------------------------------------------------------------- #
+# ----------------------------------------------------------------------
+# Argument parsing
+# ----------------------------------------------------------------------
 
 def parse_args():
+
     parser = argparse.ArgumentParser(
         description=(
-            "Compute per-position match/mismatch counts and frequencies "
-            "from a bam file using pysam."
-        ),
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+            "Quantify reference-to-observed base substitutions in "
+            "mapped reads from a coordinate-sorted BAM."
+        )
     )
+
+    # Required input arguments
 
     parser.add_argument(
         "--bam",
         required=True,
-        help="Path to input bam file. Must be sorted and indexed (with .bai)"
-             "(create with `samtools sort` and `samtools index` if missing)",
+        help="Input coordinate-sorted and indexed BAM.",
     )
+
     parser.add_argument(
         "--ref",
         required=True,
-        help="Path to reference fasta file. Must have a .fai index "
-             "(create with `samtools faidx ref.fa` if missing).",
+        help=(
+            "Reference FASTA. Must have an accompanying .fai index."
+        ),
     )
+
+    # Output files
+
     parser.add_argument(
-        "--out",
+        "--global-out",
         default=None,
-        help="Path to output TSV file. If omitted, results are written to stdout.",
+        help=(
+            "Output TSV for global substitution counts. "
+            "If omitted, this table is not produced."
+        ),
     )
+
+    parser.add_argument(
+        "--refseq-out",
+        default=None,
+        help=(
+            "Output TSV for per-reference-sequence substitution "
+            "counts. If omitted, this table is not produced."
+        ),
+    )
+
+    parser.add_argument(
+        "--refpos-out",
+        default=None,
+        help=(
+            "Output TSV for per-reference-sequence/per-position "
+            "substitution counts. If omitted, this table is "
+            "not produced."
+        ),
+    )
+
+    parser.add_argument(
+        "--readpos-out",
+        default=None,
+        help=(
+            "Output TSV for substitution counts by read position. "
+            "If omitted, this table is not produced."
+        ),
+    )
+
     parser.add_argument(
         "--prefix",
         default=None,
-        help="Optional text to output as a 1st column of all tsv output.",
+        help=(
+            "Optional text written as the first tab-delimited column "
+            "of every output file."
+        ),
     )
+
     parser.add_argument(
-        "--region",
-        default=None,
-        help="Optional region string to restrict analysis, e.g. "
-             "'chr1:1000-2000' or just 'chr1' for a whole reference sequence. "
-             "coordinates are as in `samtools`, and are 1-based",
+        "--output-headers",
+        action="store_true",
+        help="Output header lines as first line of output files. Default: do not.",
     )
+
     parser.add_argument(
-        "--min_depth",
-        type=int,
-        default=0,
-        help="Minimum coverage depth required to report a position. Positions with "
-             "Default 0 means all positions are reported.",
+        "--output-all-positions",
+        action="store_true",
+        help=(
+            "Output positions in per-refseq-per-positition output even if they have "
+            "zero counts for the indicated substitution (no observations of that substitution)."
+            "Default: do not."
+        ),
     )
+
+    # Filtering
+
     parser.add_argument(
-        "--max_depth",
-        type=int,
-        default=20000,
-        help="Maximum coverage depth allowed at a position. "
-             "Passed to the pysam pileup() function max_depth parameter.",
-    )
-    parser.add_argument(
-        "--min_base_quality",
-        type=int,
-        default=20,
-        help="Minimum basecall quality score for a base to be counted. "
-             "Bases below this threshold are excluded from all counts.",
-    )
-    parser.add_argument(
-        "--min_mapping_quality",
+        "--min-mapq",
         type=int,
         default=20,
-        help="Minimum mapping quality (MAPQ) for a read to be included in analysis",
+        help="Minimum mapping quality. Default: 20.",
     )
+
     parser.add_argument(
-        "--stepper",
-        choices=["samtools", "all", "nofilter"],
-        default="samtools",
-        help="pysam pileup 'stepper' option controlling which reads are "
-             "skipped. 'samtools' mimics samtools default filtering "
-             "(skips unmapped/secondary/QC-fail/duplicate reads by "
-             "default within pysam). 'all' / 'nofilter' include more reads; "
-             "see pysam docs for more information, at: " 
-             "https://pysam.readthedocs.io/en/latest/api.html#pysam.AlignmentFile.pileup",
+        "--min-baseq",
+        type=int,
+        default=30,
+        help="Minimum base quality. Default: 30.",
     )
+
     parser.add_argument(
-        "--mismatch_types_per_ref_out",
+        "--include-duplicates",
+        action="store_true",
+        help="Include reads marked as duplicates. Default: exclude.",
+    )
+
+    parser.add_argument(
+        "--include-secondary",
+        action="store_true",
+        help="Include secondary alignments. Default: exclude.",
+    )
+
+    parser.add_argument(
+        "--include-supplementary",
+        action="store_true",
+        help="Include supplementary alignments. Default: exclude.",
+    )
+
+    # Read-position restriction
+
+    parser.add_argument(
+        "--max-read-position",
+        type=int,
         default=None,
-        help="Optional path to write a TSV summarizing mismatch type counts "
-             "(e.g. C->A, G->T) per reference sequence. One row "
-             "per (contig, ref_base, alt_base) combination observed. "
-             "Only A/C/G/T reference bases are classified -- positions "
-             "where the reference base is 'N' are excluded from this "
-             "summary, since 'N->X' is not a meaningful substitution type.",
+        help=(
+            "If specified, only observations within this many bases "
+            "of either read end are included in readpos output. "
+            "Other output tables are unaffected.  Default: no limit."
+        ),
     )
+
+    # Overlap handling
+
     parser.add_argument(
-        "--mismatch_types_by_pos_out",
-        default=None,
-        help="Optional path to write a TSV summarizing mismatch type counts "
-             "(e.g. C->A, G->T) per reference sequence as a function of position in read"
-             "Position in read uses positive integers to indicate position in read (1-based)"
-             "and negative integers to indicate distance from read end." 
-             "Position 1 = 1st base in read; -1 = last base in read, -2 = penultimate base in read.", 
+        "--collapse-overlaps",
+        action="store_true",
+        help=(
+            "Collapse overlapping R1/R2 observations into a single "
+            "molecular observation. Requires temporary name sorting."
+        ),
     )
+
     parser.add_argument(
-        "--mismatch_types_total_out",
-        default=None,
-        help="Optional path to write a TSV summarizing mismatch type counts "
-             "(e.g. C->A, G->T) totalled across all reference sequences in "
-             "the processed region(s). One row per (ref_base, alt_base) "
-             "combination observed. Same A/C/G/T-only restriction as "
-             "--mismatch-types-per-ref-out.",
+        "--overlap-disagreement",
+        choices=("higher-quality", "discard"),
+        default="higher-quality",
+        help=(
+            "How to handle an R1/R2 overlap where the observed bases "
+            "disagree. 'higher-quality' retains the observation with "
+            "higher base quality; equal-quality disagreements are "
+            "discarded. 'discard' discards all disagreements. "
+            "Default: higher-quality."
+        ),
     )
 
     return parser.parse_args()
 
 
-# --------------------------------------------------------------------------- #
-# Validation helpers
-# --------------------------------------------------------------------------- #
+# ----------------------------------------------------------------------
+# Input validation
+# ----------------------------------------------------------------------
 
-def require_sorted_bam(bam):
-    """
-    Fail if the BAM is not sorted (per its header) or is not indexed. 
-    Both are required because this script does region-based
-    pileup queries to enumerate every position, including zero-coverage
-    positions.
-    """
-    header_dict = bam.header.to_dict()
-    sort_order = header_dict.get("HD", {}).get("SO")
+def check_inputs(args):
 
-    if sort_order != "coordinate":
-        sys.stderr.write(
-            "ERROR: input BAM is not sorted "
-            f"(found HD/SO = {sort_order!r}). This script requires a "
-            "sorted, indexed BAM.\n"
+    if not os.path.isfile(args.bam):
+        raise FileNotFoundError(
+            f"BAM not found: {args.bam}"
         )
-        sys.exit(1)
 
-    if not bam.has_index():
-        sys.stderr.write(
-            "ERROR: input BAM is not indexed. This script requires an "
-            "indexed BAM (.bai file)."
-            "Index with: samtools index sorted.bam\n"
+    bai1 = args.bam + ".bai"
+    bai2 = os.path.splitext(args.bam)[0] + ".bai"
+
+    if not os.path.isfile(bai1) and not os.path.isfile(bai2):
+        raise FileNotFoundError(
+            f"BAM index not found for {args.bam}. "
+            f"Expected {bai1} or {bai2}."
         )
-        sys.exit(1)
 
-def parse_region(region_str, bam):
-    """
-    Optional: Parse a region string of the form 'chrom:start-stop' or just 'chrom'
-    into (contig, start_0based, stop_exclusive). 
-
-    Returns a list of (contig, start, stop) tuples to process. 
-    """
-    if region_str is None:
-        # Process every refseq in the bam, in full.
-        return [
-            (contig, 0, bam.get_reference_length(contig))
-            for contig in bam.references
-        ]
-
-    if ":" in region_str:
-        contig, coords = region_str.split(":", 1)
-        try:
-            start_str, stop_str = coords.split("-")
-            # Convert from 1-based inclusive (user-facing) to 0-based
-            # half-open (pysam/htslib internal convention).
-            start = int(start_str) - 1
-            stop = int(stop_str)
-        except ValueError:
-            sys.stderr.write(
-                f"ERROR: could not parse region '{region_str}'. "
-                "Expected format 'chrom:start-stop' or just 'chrom'.\n"
-            )
-            sys.exit(1)
-    else:
-        contig = region_str
-        start = 0
-        stop = bam.get_reference_length(contig)
-
-    if contig not in bam.references:
-        sys.stderr.write(
-            f"ERROR: contig '{contig}' not found in BAM header.\n"
+    if not os.path.isfile(args.ref):
+        raise FileNotFoundError(
+            f"Reference FASTA not found: {args.ref}"
         )
-        sys.exit(1)
 
-    return [(contig, start, stop)]
-
-
-# --------------------------------------------------------------------------- #
-# Core logic
-# --------------------------------------------------------------------------- #
-
-
-def compute_mismatch_profile(args, mismatch_types_per_ref, mismatch_types_total, mismatch_types_by_pos):
-    """
-    Generator that yields per-refseq/per-position match/mismatch counts
-
-    As a side effect, this also accumulates mismatch type counts (e.g.
-    C->A, G->T) into the caller-supplied accumulators:
-        - mismatch_types_per_ref: defaultdict(Counter), keyed by
-          contig -> Counter({(ref_base, alt_base): count, ...})
-        - mismatch_types_total: Counter({(ref_base, alt_base): count, ...}),
-          totalled across every contig/region processed.
-
-    Both accumulators are mutated in place; the caller creates them before
-    calling this generator and inspects them after the generator is fully
-    consumed (e.g. after write_output() has iterated over all records).
-
-    Only A/C/G/T reference bases are classified into mismatch types --
-    positions where the reference base is 'N' are skipped for this
-    particular accounting, since "N->X" is not a meaningful substitution
-    type. This does NOT affect the main per-position output, which still
-    reports counts at reference-N positions as usual.
-    """
-
-    # Open the BAM file for reading.
-    bam = pysam.AlignmentFile(args.bam, "rb")
-
-    # Confirm bam is sorted and indexed 
-    require_sorted_bam(bam)
-
-    # Open the reference FASTA. Requires a .fai index alongside it.
-    try:
-        ref = pysam.FastaFile(args.ref)
-    except Exception as e:
-        sys.stderr.write(
-            f"ERROR: could not open reference FASTA '{args.ref}'. "
-            f"Make sure a .fai index exists (samtools faidx {args.ref}).\n"
-            f"Original error: {e}\n"
+    if not os.path.isfile(args.ref + ".fai"):
+        raise FileNotFoundError(
+            f"Reference FASTA index not found: {args.ref}.fai"
         )
-        sys.exit(1)
 
-    # optionally limit to certain refseqs/regions
-    regions_to_process = parse_region(args.region, bam)
+    if args.min_mapq < 0:
+        raise ValueError("--min-mapq must be >= 0")
 
-    # define dictionary with pysam args
-    pileup_common_kwargs = dict(
-        stepper             = args.stepper,
-        max_depth           = args.max_depth,
-        min_base_quality    = args.min_base_quality,
-        min_mapping_quality = args.min_mapping_quality,
-        truncate            = True,   # Pysam doc: By default, the samtools pileup engine outputs all reads overlapping a region. If truncate is True and a region is given, only columns in the exact region specified are returned
-        ignore_overlaps     = False,  # Pysam doc: If set to True, detect if read pairs overlap and only take the higher quality base.
+    if args.min_baseq < 0:
+        raise ValueError("--min-baseq must be >= 0")
+
+    if args.max_read_position is not None:
+        if args.max_read_position < 1:
+            raise ValueError("--max-read-position must be >= 1")
+
+
+# ----------------------------------------------------------------------
+# Counters
+# ----------------------------------------------------------------------
+
+def empty_counter():
+    return collections.Counter(
+        {sub: 0 for sub in SUBSTITUTIONS}
     )
 
-    # for each refseq/region
-    for contig, region_start, region_stop in regions_to_process:
 
-        # Fetch the reference sequence once. 
-        contig_seq = ref.fetch(contig)
-        contig_len_in_ref = len(contig_seq)
+# ----------------------------------------------------------------------
+# Counters
+# ----------------------------------------------------------------------
 
-        # If the requested range extends beyond the reference sequence,
-        # the bam and refseq likely do not correspond to each other 
-        # (e.g. different genome builds, truncated FASTA, wrong file). 
-        # Throw error 
-        if region_stop > contig_len_in_ref:
-            sys.stderr.write(
-                f"ERROR: reference/BAM mismatch detected for reference sequnce "
-                f"'{contig}'. BAM header reports length "
-                f"{bam.get_reference_length(contig)}, but reference FASTA "
-                f"'{args.ref}' only has {contig_len_in_ref} bases for this "
-                f"sequence. Requested range up to position {region_stop} "
-                "exceeds the reference sequence length.\n"
-                "This usually means the BAM was aligned against a "
-                "different reference than the one provided. Aborting.\n"
-            )
-            sys.exit(1)
+def empty_counter():
 
-        # create a "pileup" of the region and use to 
-        # build a lookup of position -> per-base counts 
-        # Only positions with at least one covering read appear in the
-        # pileup output; positions absent from this dict have zero coverage
-        # and are filled in below.
-        position_counts = {}
+    return collections.Counter(
+        {sub: 0 for sub in SUBSTITUTIONS}
+    )
 
-        # call pysam bam.pileup() 
-        pileup_iter = bam.pileup(
-            contig = contig,
-            start  = region_start,
-            stop   = region_stop,
-            **pileup_common_kwargs,
+
+# ----------------------------------------------------------------------
+# Substitution
+# ----------------------------------------------------------------------
+
+def make_substitution(ref_base, obs_base):
+
+    ref_base = ref_base.upper()
+    obs_base = obs_base.upper()
+
+    if ref_base not in BASES:
+        return None
+
+    if obs_base not in BASES:
+        return None
+
+    return f"{ref_base}>{obs_base}"
+
+
+# ----------------------------------------------------------------------
+# Read-level filtering
+# ----------------------------------------------------------------------
+
+# does this read pass filters?
+def passes_read_filters(read, args):
+
+    if read.is_unmapped:
+        return False
+
+    if read.is_secondary and not args.include_secondary:
+        return False
+
+    if read.is_supplementary and not args.include_supplementary:
+        return False
+
+    if read.is_duplicate and not args.include_duplicates:
+        return False
+
+    if read.mapping_quality < args.min_mapq:
+        return False
+
+    if read.query_sequence is None:
+        return False
+
+    return True
+
+# ----------------------------------------------------------------------
+# Read label
+# ----------------------------------------------------------------------
+
+def get_read_label(read):
+
+    if not read.is_paired:
+        return "R1"
+
+    if read.is_read1:
+        return "R1"
+
+    if read.is_read2:
+        return "R2"
+
+    return "R1"
+
+
+# ----------------------------------------------------------------------
+# Extract observations from one read
+# ----------------------------------------------------------------------
+
+def get_read_observations(
+    read,
+    reference_sequence,
+    args,
+):
+    """
+    Return:
+
+        {
+            reference_position_0based: observation
+        }
+
+    Each observation contains:
+
+        refpos
+        ref_base
+        obs_base
+        substitution
+        baseq
+        query_pos
+        position_from_start
+        position_from_end
+
+    Insertions and deletions are excluded.
+    """
+
+    observations = {}
+
+    query_sequence = read.query_sequence
+
+    if query_sequence is None:
+        return observations
+
+    read_length = len(query_sequence)
+
+    query_qualities = read.query_qualities
+
+    for query_pos, refpos in read.get_aligned_pairs(
+        matches_only=False
+    ):
+
+        # Insertion relative to reference.
+        if refpos is None:
+            continue
+
+        # Deletion relative to reference.
+        if query_pos is None:
+            continue
+
+        if query_pos < 0 or query_pos >= read_length:
+            continue
+
+        # Base quality.
+
+        if query_qualities is None:
+            baseq = 0
+        else:
+            baseq = query_qualities[query_pos]
+
+        if baseq < args.min_baseq:
+            continue
+
+        # Reference base.
+
+        if refpos < 0 or refpos >= len(reference_sequence):
+            continue
+
+        ref_base = reference_sequence[refpos].upper()
+
+        obs_base = query_sequence[query_pos].upper()
+
+        sub = make_substitution(
+            ref_base,
+            obs_base,
         )
 
-        # for each position in the refseq
-        for pileup_column in pileup_iter:
-            # the position in the reference sequence
-            pos0 = pileup_column.reference_pos
+        if sub is None:
+            continue
 
-            base_counts = Counter()
-            # for each read in the pileup
-            for pileup_read in pileup_column.pileups:
-                # Skip deletions and reference-skips; there is no
-                # base to compare against the reference at these positions
-                # for this read.
-                if pileup_read.is_del or pileup_read.is_refskip:
-                    continue
+        observations[refpos] = {
+            "refpos": refpos,
+            "ref_base": ref_base,
+            "obs_base": obs_base,
+            "substitution": sub,
+            "baseq": baseq,
+            "query_pos": query_pos,
 
-                # the "aligned segment" object
-                aln = pileup_read.alignment
-                # the position in the read (query)
-                query_pos = pileup_read.query_position
-                # the read (query) name
-                query_name = aln.query_name
-                if query_pos is None:
-                    continue
+            # 1-based distance from the beginning.
+            "position_from_start": query_pos + 1,
 
-                # get the base in this read at this position
-                base = aln.query_sequence[query_pos].upper()
+            # 1-based distance from the end.
+            "position_from_end": (
+                read_length - query_pos
+            ),
+        }
 
-                # keep track of matches/mismatches as a function of position in read
-                # get the reference sequence base at this position
-                ref_base = contig_seq[pos0].upper()
-                # use 1-based positions
-                distance_from_begin = query_pos + 1
-                # use negative numbers for distances from end of read
-                distance_from_end   = 0-(aln.query_length - query_pos)
-
-                # use a tuple (refseq_name, distance from begin (+ integers) or end(- integers)) as key for dictionary
-                mismatch_types_by_pos[(contig, distance_from_begin)][(ref_base, base)] += 1
-                mismatch_types_by_pos[(contig, distance_from_end)  ][(ref_base, base)] += 1
-
-                # tabulate
-                base_counts[base] += 1
-
-            # store base counts at this position of this refseq
-            position_counts[pos0] = base_counts
+    return observations
 
 
-        # --- Walk every position in the requested range, in order ------ #
-        for pos0 in range(region_start, region_stop):
+# ----------------------------------------------------------------------
+# Add one observation to all relevant counters
+# ----------------------------------------------------------------------
 
-            # double check position doesn't exceed refseq length
-            if pos0 >= contig_len_in_ref:
-                sys.stderr.write(
-                    f"ERROR: reference/BAM mismatch detected at "
-                    f"{contig}:{pos0 + 1} (position beyond reference "
-                    "sequence length). Aborting.\n"
-                )
-                sys.exit(1)
+def add_observation(
+    read,
+    observation,
+    args,
+    global_counts,
+    refseq_counts,
+    refpos_counts,
+    readpos_counts,
+):
 
-            # the reference sequence base at this position
-            ref_base = contig_seq[pos0].upper()
+    sub = observation["substitution"]
 
-            # the count of mapped bases at this position
-            base_counts = position_counts.get(pos0, Counter())
+    refseq = read.reference_name
 
-            # depth at this position (of reads passing filters, sufficient mapQ, basecall Q, etc)
-            depth = sum(base_counts.values())
+    refpos = observation["refpos"]
 
-            # --- Accumulate mismatch type counts (e.g. C->A) in total and per refseq 
-            # This happens before the --min-depth filter below, so the
-            # mismatch-type summaries reflect every observed mismatch in
-            # the processed region(s), independent of whatever depth
-            # cutoff is applied to the main per-position report.
-            # Only classify positions with an A/C/G/T reference base;
-            # "N->X" is not a meaningful substitution type and is skipped.
-            if ref_base in ("A", "C", "G", "T"):
-                for alt_base in ("A", "C", "G", "T"):
-                    # if alt_base == ref_base:
-                        # continue
-                    count = base_counts.get(alt_base, 0)
-                    # if count == 0:
-                        # continue
-                    mismatch_types_per_ref[contig][(ref_base, alt_base)] += count
-                    mismatch_types_total[(ref_base, alt_base)] += count
+    # Global.
 
+    global_counts[sub] += 1
 
-            # if a minimum depth to report is specified
-            if depth < args.min_depth:
-                continue
+    # Reference sequence.
 
-            # number of reads matching the refseq
-            matches = base_counts.get(ref_base, 0)
+    refseq_counts[refseq][sub] += 1
 
-            # Per-position mismatch counts: counts of each base observed at this
-            # position, EXCLUDING the count for the reference base itself
-            # (which is by definition a match, not a mismatch).
-            mismatch_counts = {
-                b: (base_counts.get(b, 0) if b != ref_base else 0)
-                for b in BASES
-            }
+    # Reference position.
+    #
+    # Output positions are 1-based.
 
-            # Per-base mismatch frequencies, relative to total depth at
-            # this position. 0.0 when depth is 0 (zero-coverage position).
-            mismatch_freqs = {
-                b: (mismatch_counts[b] / depth) if depth > 0 else 0.0
-                for b in BASES
-            }
+    refpos_counts[
+        (refseq, refpos + 1)
+    ][sub] += 1
 
-            yield {
-                "chrom": contig,
-                "pos": pos0 + 1,  # report 1-based position
-                "ref_base": ref_base,
-                "depth": depth,
-                "matches": matches,
-                # Raw per-base counts (includes the reference base's own count)
-                "A": base_counts.get("A", 0),
-                "C": base_counts.get("C", 0),
-                "G": base_counts.get("G", 0),
-                "T": base_counts.get("T", 0),
-                "N": base_counts.get("N", 0),
-                # Per-base mismatch counts (reference base's own count is 0)
-                "mismatch_A": mismatch_counts["A"],
-                "mismatch_C": mismatch_counts["C"],
-                "mismatch_G": mismatch_counts["G"],
-                "mismatch_T": mismatch_counts["T"],
-                "mismatch_N": mismatch_counts["N"],
-                # Per-base mismatch frequencies
-                "mismatch_freq_A": mismatch_freqs["A"],
-                "mismatch_freq_C": mismatch_freqs["C"],
-                "mismatch_freq_G": mismatch_freqs["G"],
-                "mismatch_freq_T": mismatch_freqs["T"],
-                "mismatch_freq_N": mismatch_freqs["N"],
-            }
+    # Read-position distributions.
+    #
+    # These are independent distributions:
+    #
+    #   start 1, 2, 3, ...
+    #
+    # and:
+    #
+    #   end 1, 2, 3, ...
+    #
+    # The same base therefore contributes to both distributions.
+    #
+    # encode distances from end as negative integers and distances from 
+    # start as positive integers
 
-    bam.close()
-    ref.close()
+    label = get_read_label(read)
 
-
-# --------------------------------------------------------------------------- #
-# Output counts
-# --------------------------------------------------------------------------- #
-
-def write_output(records, out_path, prefix):
-    """
-    Write per-position records to a TSV file, or to stdout if out_path is None.
-    """
-    # header = [
-        # "chrom", "pos", "ref_base", "depth", "matches",
-        # "A", "C", "G", "T", "N",
-        # "mismatch_A", "mismatch_C", "mismatch_G", "mismatch_T", "mismatch_N",
-        # "mismatch_freq_A", "mismatch_freq_C", "mismatch_freq_G",
-        # "mismatch_freq_T", "mismatch_freq_N",
-    # ]
-    header = [
-        "chrom", "pos", "ref_base", "depth", 
-        "A", "C", "G", "T", "N"
+    start_position = observation[
+        "position_from_start"
     ]
 
-    out_fh = open(out_path, "w") if out_path else sys.stdout
+    end_position = observation[
+        "position_from_end"
+    ]
 
-    try:
-        # don't output header 
-        # out_fh.write("\t".join(header) + "\n")
-        n_rows = 0
-        for rec in records:
-            row = [
-                rec["chrom"],
-                str(rec["pos"]),
-                rec["ref_base"],
-                str(rec["depth"]),
-                # str(rec["matches"]),
-                str(rec["A"]),
-                str(rec["C"]),
-                str(rec["G"]),
-                str(rec["T"]),
-                str(rec["N"]),
-                # str(rec["mismatch_A"]),
-                # str(rec["mismatch_C"]),
-                # str(rec["mismatch_G"]),
-                # str(rec["mismatch_T"]),
-                # str(rec["mismatch_N"]),
-                # f"{rec['mismatch_freq_A']:.6f}",
-                # f"{rec['mismatch_freq_C']:.6f}",
-                # f"{rec['mismatch_freq_G']:.6f}",
-                # f"{rec['mismatch_freq_T']:.6f}",
-                # f"{rec['mismatch_freq_N']:.6f}",
+    if (
+        args.max_read_position is None
+        or start_position <= args.max_read_position
+    ):
+
+        key = (
+            label,
+            "start",
+            start_position,
+        )
+
+        readpos_counts[key][sub] += 1
+
+    if (
+        args.max_read_position is None
+        or end_position <= args.max_read_position
+    ):
+
+        key = (
+            label,
+            "end",
+            -end_position,
+        )
+
+        readpos_counts[key][sub] += 1
+
+
+# ----------------------------------------------------------------------
+# Collapse one R1/R2 pair
+# ----------------------------------------------------------------------
+
+def collapse_pair(
+    read1,
+    read2,
+    reference_sequence,
+    args,
+):
+    """
+    Collapse observations from one R1/R2 pair.
+
+    For positions covered by only one read:
+        retain that observation.
+
+    For positions covered by both:
+
+        same observed base:
+            retain one observation, using the higher-BQ read's
+            positional information.
+
+        different observed bases:
+            higher-BQ observation wins.
+
+        equal BQ:
+            discard.
+
+    Returns:
+
+        list of (chosen_read, observation)
+    """
+
+    obs1 = get_read_observations(
+        read1,
+        reference_sequence,
+        args,
+    )
+
+    obs2 = get_read_observations(
+        read2,
+        reference_sequence,
+        args,
+    )
+
+    result = []
+
+    positions = sorted(
+        set(obs1) | set(obs2)
+    )
+
+    for refpos in positions:
+
+        a = obs1.get(refpos)
+        b = obs2.get(refpos)
+
+        # Only R1 covers the position.
+
+        if a is not None and b is None:
+
+            result.append(
+                (read1, a)
+            )
+
+            continue
+
+        # Only R2 covers the position.
+
+        if b is not None and a is None:
+
+            result.append(
+                (read2, b)
+            )
+
+            continue
+
+        # Both cover it.
+
+        if a["ref_base"] != b["ref_base"]:
+            # Should not happen with the same reference.
+            continue
+
+        # Same observed base.
+
+        if a["obs_base"] == b["obs_base"]:
+
+            if b["baseq"] > a["baseq"]:
+                result.append(
+                    (read2, b)
+                )
+            else:
+                result.append(
+                    (read1, a)
+                )
+
+            continue
+
+        # Different observed bases.
+
+        if args.overlap_disagreement == "discard":
+            continue
+
+        if a["baseq"] > b["baseq"]:
+
+            result.append(
+                (read1, a)
+            )
+
+        elif b["baseq"] > a["baseq"]:
+
+            result.append(
+                (read2, b)
+            )
+
+        else:
+            # Equal-quality disagreement.
+            continue
+
+    return result
+
+
+# ----------------------------------------------------------------------
+# Standard processing
+# ----------------------------------------------------------------------
+
+def process_standard(
+    bam,
+    fasta,
+    args,
+    global_counts,
+    refseq_counts,
+    refpos_counts,
+    readpos_counts,
+):
+
+    reads_examined = 0
+    reads_passed = 0
+    bases_counted = 0
+
+    # Process reference sequences one at a time so that we only need
+    # one reference sequence in memory at once.
+
+    for refseq in bam.references:
+
+        sys.stderr.write(
+            f"Processing {refseq}...\n"
+        )
+        sys.stderr.flush()
+
+        reference_sequence = fasta.fetch(
+            refseq
+        ).upper()
+
+        for read in bam.fetch(refseq):
+
+            reads_examined += 1
+
+            if not passes_read_filters(
+                read,
+                args,
+            ):
+                continue
+
+            reads_passed += 1
+
+            observations = get_read_observations(
+                read,
+                reference_sequence,
+                args,
+            )
+
+            for observation in observations.values():
+
+                add_observation(
+                    read,
+                    observation,
+                    args,
+                    global_counts,
+                    refseq_counts,
+                    refpos_counts,
+                    readpos_counts,
+                )
+
+                bases_counted += 1
+
+    return (
+        reads_examined,
+        reads_passed,
+        bases_counted,
+    )
+
+
+# ----------------------------------------------------------------------
+# Overlap-collapsed processing
+# ----------------------------------------------------------------------
+
+def process_collapsed(
+    bam,
+    fasta,
+    args,
+    global_counts,
+    refseq_counts,
+    refpos_counts,
+    readpos_counts,
+):
+
+    reads_examined = 0
+    reads_passed = 0
+    bases_counted = 0
+
+    current_qname = None
+    current_reads = []
+
+    # Reference sequence cache.
+    #
+    # Because the BAM is query-name sorted, reads are not grouped by
+    # reference sequence. We therefore cache reference sequences on
+    # demand. For a very large genome this can consume substantial RAM.
+    #
+    # In practice, for very large references, the non-collapsed mode
+    # is substantially more memory efficient.
+
+    reference_cache = {}
+
+    def get_reference(refseq):
+
+        if refseq not in reference_cache:
+
+            reference_cache[refseq] = fasta.fetch(
+                refseq
+            ).upper()
+
+        return reference_cache[refseq]
+
+    def process_group(reads):
+
+        nonlocal reads_passed
+        nonlocal bases_counted
+
+        if not reads:
+            return
+
+        passed = [
+            read
+            for read in reads
+            if passes_read_filters(
+                read,
+                args,
+            )
+        ]
+
+        reads_passed += len(passed)
+
+        if not passed:
+            return
+
+        r1 = None
+        r2 = None
+        other_reads = []
+
+        for read in passed:
+
+            if (
+                read.is_paired
+                and read.is_read1
+                and r1 is None
+            ):
+                r1 = read
+                continue
+
+            if (
+                read.is_paired
+                and read.is_read2
+                and r2 is None
+            ):
+                r2 = read
+                continue
+
+            other_reads.append(read)
+
+        # Complete R1/R2 pair.
+
+        if r1 is not None and r2 is not None:
+
+            # The two mates should normally have the same reference
+            # sequence for an ordinary overlapping pair. If they do
+            # not, process them independently.
+
+            if (
+                r1.reference_name
+                == r2.reference_name
+            ):
+
+                refseq = r1.reference_name
+
+                reference_sequence = get_reference(
+                    refseq
+                )
+
+                observations = collapse_pair(
+                    r1,
+                    r2,
+                    reference_sequence,
+                    args,
+                )
+
+                for chosen_read, observation in observations:
+
+                    add_observation(
+                        chosen_read,
+                        observation,
+                        args,
+                        global_counts,
+                        refseq_counts,
+                        refpos_counts,
+                        readpos_counts,
+                    )
+
+                    bases_counted += 1
+
+            else:
+
+                for read in (r1, r2):
+
+                    refseq = read.reference_name
+
+                    reference_sequence = get_reference(
+                        refseq
+                    )
+
+                    observations = get_read_observations(
+                        read,
+                        reference_sequence,
+                        args,
+                    )
+
+                    for observation in observations.values():
+
+                        add_observation(
+                            read,
+                            observation,
+                            args,
+                            global_counts,
+                            refseq_counts,
+                            refpos_counts,
+                            readpos_counts,
+                        )
+
+                        bases_counted += 1
+
+        else:
+
+            # No complete pair. Process available reads independently.
+
+            for read in passed:
+
+                refseq = read.reference_name
+
+                reference_sequence = get_reference(
+                    refseq
+                )
+
+                observations = get_read_observations(
+                    read,
+                    reference_sequence,
+                    args,
+                )
+
+                for observation in observations.values():
+
+                    add_observation(
+                        read,
+                        observation,
+                        args,
+                        global_counts,
+                        refseq_counts,
+                        refpos_counts,
+                        readpos_counts,
+                    )
+
+                    bases_counted += 1
+
+    for read in bam:
+
+        reads_examined += 1
+
+        qname = read.query_name
+
+        if current_qname is None:
+            current_qname = qname
+
+        if qname != current_qname:
+
+            process_group(
+                current_reads
+            )
+
+            current_reads = []
+            current_qname = qname
+
+        current_reads.append(read)
+
+    # Last group.
+
+    process_group(
+        current_reads
+    )
+
+    return (
+        reads_examined,
+        reads_passed,
+        bases_counted,
+    )
+
+
+# ----------------------------------------------------------------------
+# Temporary name sorting
+# ----------------------------------------------------------------------
+
+def make_name_sorted_bam(args):
+
+    tmpdir = tempfile.mkdtemp(
+        prefix="mismatch_spectrum_",
+        dir=args.tmpdir,
+    )
+
+    output_bam = os.path.join(
+        tmpdir,
+        "name_sorted.bam",
+    )
+
+    sys.stderr.write(
+        "Creating temporary query-name-sorted BAM...\n"
+    )
+    sys.stderr.flush()
+
+    pysam.sort(
+        "-n",
+        "-o",
+        output_bam,
+        "-T",
+        os.path.join(
+            tmpdir,
+            "sort_tmp",
+        ),
+        args.bam,
+    )
+
+    return output_bam, tmpdir
+
+
+# ----------------------------------------------------------------------
+# Prefix
+# ----------------------------------------------------------------------
+
+def prefix_columns(args, columns):
+
+    if args.prefix is None:
+        return columns
+
+    return [
+        args.prefix,
+        *columns,
+    ]
+
+
+# ----------------------------------------------------------------------
+# Output: global
+# ----------------------------------------------------------------------
+
+def write_global(
+    path,
+    counts,
+    args,
+):
+
+    if path is None:
+        return
+
+    total = sum(
+        counts.values()
+    )
+
+    with open(path, "w") as out:
+
+        if args.output_headers:
+           out.write(
+               "\t".join(
+                   prefix_columns(
+                       args,
+                       [
+                           "ref_base",
+                           "obs_base",
+                           "count",
+                       ],
+                   )
+               )
+               + "\n"
+           )
+
+        for sub in SUBSTITUTIONS:
+
+            ref_base, obs_base = sub.split(">")
+
+            count = counts[sub]
+
+            frequency = (
+                count / total
+                if total > 0
+                else 0.0
+            )
+
+            out.write(
+                "\t".join(
+                    prefix_columns(
+                        args,
+                        [
+                            ref_base,
+                            obs_base,
+                            str(count),
+                        ],
+                    )
+                )
+                + "\n"
+            )
+
+
+# ----------------------------------------------------------------------
+# Output: reference sequence
+# ----------------------------------------------------------------------
+
+def write_refseq(
+    path,
+    counts_by_refseq,
+    args,
+):
+
+    if path is None:
+        return
+
+    with open(path, "w") as out:
+
+        if args.output_headers:
+           out.write(
+               "\t".join(
+                   prefix_columns(
+                       args,
+                       [
+                           "refseq",
+                           "ref_base",
+                           "obs_base",
+                           "count",
+                       ],
+                   )
+               )
+               + "\n"
+           )
+
+        for refseq in sorted(
+            counts_by_refseq
+        ):
+
+            counts = counts_by_refseq[
+                refseq
             ]
-            if prefix is not None:
-                out_fh.write(f"{prefix}\t")
-            out_fh.write("\t".join(row) + "\n")
-            n_rows += 1
-        return n_rows
-    finally:
-        if out_path:
-            out_fh.close()
+
+            # Denominator = all observations for this reference
+            # sequence.
+
+            total = sum(
+                counts.values()
+            )
+
+            for sub in SUBSTITUTIONS:
+
+                ref_base, obs_base = sub.split(">")
+
+                count = counts[sub]
+
+                frequency = (
+                    count / total
+                    if total > 0
+                    else 0.0
+                )
+
+                out.write(
+                    "\t".join(
+                        prefix_columns(
+                            args,
+                            [
+                                refseq,
+                                ref_base,
+                                obs_base,
+                                str(count),
+                            ],
+                        )
+                    )
+                    + "\n"
+                )
 
 
+# ----------------------------------------------------------------------
+# Output: reference position
+# ----------------------------------------------------------------------
 
-def write_mismatch_type_summary_per_ref(mismatch_types_per_ref, out_path, prefix):
-    """
-    Write a TSV of mismatch type counts (e.g. C->A, G->T) per reference
-    sequence (contig). One row per (refseq, ref_base, alt_base) combination
-    that was observed at least once. 
-    """
-    out_fh = open(out_path, "w")
-    try:
-        # out_fh.write("chrom\tref_base\talt_base\tcount\n")
-        n_rows = 0
-        # Sort for deterministic, reproducible output
-        for contig in sorted(mismatch_types_per_ref.keys()):
-            type_counts = mismatch_types_per_ref[contig]
-            for (ref_base, alt_base) in sorted(type_counts.keys()):
-                count = type_counts[(ref_base, alt_base)]
-                if prefix is not None:
-                    out_fh.write(f"{prefix}\t")
-                out_fh.write(f"{contig}\t{ref_base}\t{alt_base}\t{count}\n")
-                n_rows += 1
-        return n_rows
-    finally:
-        out_fh.close()
+def write_refpos(
+    path,
+    counts_by_refpos,
+    args,
+):
+
+    if path is None:
+        return
+
+    with open(path, "w") as out:
+
+        if args.output_headers:
+           out.write(
+               "\t".join(
+                   prefix_columns(
+                       args,
+                       [
+                           "refseq",
+                           "position",
+                           "ref_base",
+                           "obs_base",
+                           "count",
+                       ],
+                   )
+               )
+               + "\n"
+           )
+
+        for (
+            refseq,
+            position,
+        ) in sorted(
+            counts_by_refpos
+        ):
+
+            counts = counts_by_refpos[
+                (refseq, position)
+            ]
+
+            total = sum(
+                counts.values()
+            )
+
+            for sub in SUBSTITUTIONS:
+
+                ref_base, obs_base = sub.split(">")
+
+                count = counts[sub]
+
+                frequency = (
+                    count / total
+                    if total > 0
+                    else 0.0
+                )
+
+                # don't output zero count positions unless specified
+                if count > 0 or args.output_all_positions:
+
+                   out.write(
+                       "\t".join(
+                           prefix_columns(
+                               args,
+                               [
+                                   refseq,
+                                   str(position),
+                                   ref_base,
+                                   obs_base,
+                                   str(count),
+                               ],
+                           )
+                       )
+                       + "\n"
+                   )
 
 
-def write_mismatch_type_by_pos(mismatch_types_by_pos, out_path, prefix):
-    """
-    Write a TSV of mismatch type counts (e.g. C->A, G->T) per reference
-    sequence per position relative to the beginning and ends of 
-    Distances from the ends of reads use negative numbers.
-    """
-    out_fh = open(out_path, "w")
-    try:
-        # out_fh.write("chrom\tdistance_from_end\tref_base\talt_base\tcount\n")
-        n_rows = 0
-        # sort keys
-        sorted_mismatches = sorted(mismatch_types_by_pos.items(), key=lambda item: item[0])
-        for (contig, distance), type_counts in sorted_mismatches:
-            for (ref_base, alt_base) in sorted(type_counts.keys()):
-                count = type_counts[(ref_base, alt_base)]
-                if prefix is not None:
-                    out_fh.write(f"{prefix}\t")
-                out_fh.write(f"{contig}\t{distance}\t{ref_base}\t{alt_base}\t{count}\n")
-                n_rows += 1
-        return n_rows
-    finally:
-        out_fh.close()
+# ----------------------------------------------------------------------
+# Output: read position
+# ----------------------------------------------------------------------
+
+def write_readpos(
+    path,
+    counts_by_readpos,
+    args,
+):
+
+    if path is None:
+        return
+
+    with open(path, "w") as out:
+
+        if args.output_headers:
+           out.write(
+               "\t".join(
+                   prefix_columns(
+                       args,
+                       [
+                           "read",
+                           # "end",
+                           "position",
+                           "ref_base",
+                           "obs_base",
+                           "count",
+                       ],
+                   )
+               )
+               + "\n"
+           )
+
+        for (
+            read_label,
+            end,
+            position,
+        ) in sorted(
+            counts_by_readpos
+        ):
+
+            counts = counts_by_readpos[
+                (
+                    read_label,
+                    end,
+                    position,
+                )
+            ]
+
+            total = sum(
+                counts.values()
+            )
+
+            for sub in SUBSTITUTIONS:
+
+                ref_base, obs_base = sub.split(">")
+
+                count = counts[sub]
+
+                frequency = (
+                    count / total
+                    if total > 0
+                    else 0.0
+                )
+
+                # don't output zero count positions unless specified
+                if count > 0 or args.output_all_positions: 
+                   out.write(
+                       "\t".join(
+                           prefix_columns(
+                               args,
+                               [
+                                   read_label,
+                                   # end,
+                                   str(position),
+                                   ref_base,
+                                   obs_base,
+                                   str(count),
+                               ],
+                           )
+                       )
+                       + "\n"
+                   )
 
 
-def write_mismatch_type_summary_total(mismatch_types_total, out_path, prefix):
-    """
-    Write a TSV of mismatch type counts (e.g. C->A, G->T) totalled across
-    every contig/region processed. One row per (ref_base, alt_base)
-    combination observed at least once.
-    """
-    out_fh = open(out_path, "w")
-    try:
-        # out_fh.write("ref_base\talt_base\tcount\n")
-        n_rows = 0
-        for (ref_base, alt_base) in sorted(mismatch_types_total.keys()):
-            count = mismatch_types_total[(ref_base, alt_base)]
-            if prefix is not None:
-                out_fh.write(f"{prefix}\t")
-            out_fh.write(f"{ref_base}\t{alt_base}\t{count}\n")
-            n_rows += 1
-        return n_rows
-    finally:
-        out_fh.close()
-
-
-# --------------------------------------------------------------------------- #
-# main entry point
-# --------------------------------------------------------------------------- #
+# ----------------------------------------------------------------------
+# Main
+# ----------------------------------------------------------------------
 
 def main():
+
     args = parse_args()
 
-    # these accumulators will be populated as a side effect of compute_mismatch_profile().
-    # these are created here, then mutated during iteration, and inspected after the generator
-    # is fully consumed by write_output() below.
-    mismatch_types_per_ref = defaultdict(Counter)
-    mismatch_types_total   = Counter()
-    mismatch_types_by_pos  = defaultdict(Counter)
+    check_inputs(args)
 
-    records = compute_mismatch_profile(args, mismatch_types_per_ref, mismatch_types_total, mismatch_types_by_pos)
-    n_rows = write_output(records, args.out, args.prefix)
+    fasta = pysam.FastaFile(
+        args.ref
+    )
 
-    dest = args.out if args.out else "stdout"
-    sys.stderr.write(f"Wrote {n_rows} positions to {dest}.\n")
+    global_counts = empty_counter()
 
-    # At this point the generator has been fully consumed (write_output
-    # iterated over every record), so the accumulators are complete.
-    if args.mismatch_types_per_ref_out:
-        n_type_rows = write_mismatch_type_summary_per_ref(
-            mismatch_types_per_ref, args.mismatch_types_per_ref_out, args.prefix
-        )
+    refseq_counts = collections.defaultdict(
+        empty_counter
+    )
+
+    refpos_counts = collections.defaultdict(
+        empty_counter
+    )
+
+    readpos_counts = collections.defaultdict(
+        empty_counter
+    )
+
+    temporary_dir = None
+    input_bam = args.bam
+
+    try:
+
+        # --------------------------------------------------------------
+        # Prepare BAM
+        # --------------------------------------------------------------
+
+        if args.collapse_overlaps:
+
+            input_bam, temporary_dir = (
+                make_name_sorted_bam(args)
+            )
+
+        # --------------------------------------------------------------
+        # Process
+        # --------------------------------------------------------------
+
         sys.stderr.write(
-            f"Wrote {n_type_rows} per-reference mismatch-type rows to "
-            f"{args.mismatch_types_per_ref_out}.\n"
+            "Processing alignments...\n"
+        )
+        sys.stderr.flush()
+
+        with pysam.AlignmentFile(
+            input_bam,
+            "rb",
+        ) as bam:
+
+            if args.collapse_overlaps:
+
+                (
+                    reads_examined,
+                    reads_passed,
+                    bases_counted,
+                ) = process_collapsed(
+                    bam,
+                    fasta,
+                    args,
+                    global_counts,
+                    refseq_counts,
+                    refpos_counts,
+                    readpos_counts,
+                )
+
+            else:
+
+                (
+                    reads_examined,
+                    reads_passed,
+                    bases_counted,
+                ) = process_standard(
+                    bam,
+                    fasta,
+                    args,
+                    global_counts,
+                    refseq_counts,
+                    refpos_counts,
+                    readpos_counts,
+                )
+
+        # --------------------------------------------------------------
+        # Write outputs
+        # --------------------------------------------------------------
+
+        if args.global_out is not None:
+
+            sys.stderr.write(
+                f"Writing {args.global_out}\n"
+            )
+
+            write_global(
+                args.global_out,
+                global_counts,
+                args,
+            )
+
+        if args.refseq_out is not None:
+
+            sys.stderr.write(
+                f"Writing {args.refseq_out}\n"
+            )
+
+            write_refseq(
+                args.refseq_out,
+                refseq_counts,
+                args,
+            )
+
+        if args.refpos_out is not None:
+
+            sys.stderr.write(
+                f"Writing {args.refpos_out}\n"
+            )
+
+            write_refpos(
+                args.refpos_out,
+                refpos_counts,
+                args,
+            )
+
+        if args.readpos_out is not None:
+
+            sys.stderr.write(
+                f"Writing {args.readpos_out}\n"
+            )
+
+            write_readpos(
+                args.readpos_out,
+                readpos_counts,
+                args,
+            )
+
+        # --------------------------------------------------------------
+        # Summary
+        # --------------------------------------------------------------
+
+        sys.stderr.write(
+            "\nFinished.\n"
+            f"  Reads examined:        "
+            f"{reads_examined:,}\n"
+            f"  Reads passing filters: "
+            f"{reads_passed:,}\n"
+            f"  Bases counted:         "
+            f"{bases_counted:,}\n"
         )
 
-    if args.mismatch_types_by_pos_out:
-        n_pos_rows = write_mismatch_type_by_pos(
-            mismatch_types_by_pos, args.mismatch_types_by_pos_out, args.prefix
-        )
-        sys.stderr.write(
-            f"Wrote {n_pos_rows} per-position mismatch-type rows to "
-            f"{args.mismatch_types_by_pos_out}.\n"
-        )
+    finally:
 
-    if args.mismatch_types_total_out:
-        n_total_rows = write_mismatch_type_summary_total(
-            mismatch_types_total, args.mismatch_types_total_out, args.prefix
-        )
-        sys.stderr.write(
-            f"Wrote {n_total_rows} total mismatch-type rows to "
-            f"{args.mismatch_types_total_out}.\n"
-        )
+        fasta.close()
+
+        if temporary_dir is not None:
+
+            sys.stderr.write(
+                "Removing temporary files...\n"
+            )
+
+            shutil.rmtree(
+                temporary_dir,
+                ignore_errors=True,
+            )
 
 
 if __name__ == "__main__":
     main()
-
