@@ -1002,7 +1002,7 @@ def make_name_sorted_bam(args):
 
     tmpdir = tempfile.mkdtemp(
         prefix="mismatch_spectrum_",
-        dir=args.tmpdir,
+        dir=os.getcwd(),
     )
 
     output_bam = os.path.join(

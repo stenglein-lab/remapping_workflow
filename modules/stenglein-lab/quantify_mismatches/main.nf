@@ -39,7 +39,8 @@ process QUANTIFY_MISMATCHES {
      --refpos-out ${meta.id}.${refseq.id}.mismatches.txt \
      --readpos-out ${meta.id}.${refseq.id}.by_read_position_mismatches.txt \
      --min-baseq $min_base_quality \
-     --min-mapq $min_mapping_quality 
+     --min-mapq $min_mapping_quality \
+     --collapse-overlaps
   """
 
 }
