@@ -557,9 +557,10 @@ def add_observation(
         or start_position <= args.max_read_position
     ):
 
+        # use positive integers to encode distance from beginning of read
         key = (
+            refseq,
             label,
-            "start",
             start_position,
         )
 
@@ -570,9 +571,10 @@ def add_observation(
         or end_position <= args.max_read_position
     ):
 
+        # use negative integers to encode distance from end of read
         key = (
+            refseq,
             label,
-            "end",
             -end_position,
         )
 
@@ -992,8 +994,6 @@ def process_collapsed(
         reads_passed,
         bases_counted,
     )
-
-
 # ----------------------------------------------------------------------
 # Temporary name sorting
 # ----------------------------------------------------------------------
@@ -1280,6 +1280,7 @@ def write_readpos(
                    prefix_columns(
                        args,
                        [
+                           "refseq",
                            "read",
                            # "end",
                            "position",
@@ -1293,8 +1294,8 @@ def write_readpos(
            )
 
         for (
+            refseq,
             read_label,
-            end,
             position,
         ) in sorted(
             counts_by_readpos
@@ -1302,8 +1303,8 @@ def write_readpos(
 
             counts = counts_by_readpos[
                 (
+                    refseq,
                     read_label,
-                    end,
                     position,
                 )
             ]
@@ -1331,8 +1332,8 @@ def write_readpos(
                            prefix_columns(
                                args,
                                [
+                                   refseq,
                                    read_label,
-                                   # end,
                                    str(position),
                                    ref_base,
                                    obs_base,
